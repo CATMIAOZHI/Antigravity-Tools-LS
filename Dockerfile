@@ -7,7 +7,7 @@ COPY apps/web-dashboard/dist ./dist/
 # --- Backend Build Stage ---
 FROM rust:1-slim-bookworm AS backend-builder
 RUN apt-get update && apt-get install -y \
-    pkg-config libssl-dev build-essential protobuf-compiler \
+    pkg-config libssl-dev build-essential protobuf-compiler cmake clang \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
