@@ -59,7 +59,7 @@ const ModelDetailsModal = ({ isOpen, onClose, account }) => {
         {recommendedModels.length > 0 && (
           <div className="space-y-4">
             <div className="flex items-center gap-4 px-1">
-              <span className="text-[9px] font-black uppercase tracking-[0.4em] text-foreground/20 whitespace-nowrap">{t('accounts.coreAssets')}</span>
+              <span className="text-[9px] font-black uppercase tracking-[0.4em] text-foreground/45 whitespace-nowrap">{t('accounts.coreAssets')}</span>
               <div className="h-px w-full bg-foreground/[0.03]"></div>
             </div>
             <div className="grid grid-cols-1 gap-2">
@@ -72,7 +72,7 @@ const ModelDetailsModal = ({ isOpen, onClose, account }) => {
                         <span className="text-sm font-bold text-foreground/80 group-hover/detail:text-foreground transition-colors uppercase tracking-tight italic">
                           {m.display_name || m.name}
                         </span>
-                        <code className="text-[9px] text-foreground/40 font-mono tracking-wider group-hover/detail:text-blue-400">
+                        <code className="text-[9px] text-foreground/65 font-mono tracking-wider group-hover/detail:text-blue-400">
                           {m.name}
                         </code>
                       </div>
@@ -96,7 +96,7 @@ const ModelDetailsModal = ({ isOpen, onClose, account }) => {
         {otherModels.length > 0 && (
           <div className="space-y-4">
             <div className="flex items-center gap-4 px-1">
-              <span className="text-[9px] font-black uppercase tracking-[0.4em] text-foreground/10 whitespace-nowrap">{t('accounts.infrastructure')}</span>
+              <span className="text-[9px] font-black uppercase tracking-[0.4em] text-foreground/45 whitespace-nowrap">{t('accounts.infrastructure')}</span>
               <div className="h-px w-full bg-foreground/[0.02]"></div>
             </div>
             <div className="grid grid-cols-1 gap-1.5">
@@ -104,7 +104,7 @@ const ModelDetailsModal = ({ isOpen, onClose, account }) => {
                 const colors = getStatusColor(m.percentage, m.name);
                 return (
                   <div key={m.name} className="flex justify-between items-center py-2 px-5 rounded-xl bg-foreground/[0.01] border border-white/[0.02] hover:bg-foreground/[0.03] transition-all">
-                    <span className="text-[10px] font-bold text-foreground/40 uppercase tracking-tighter truncate max-w-[200px]">{m.display_name || m.name}</span>
+                    <span className="text-[10px] font-bold text-foreground/65 uppercase tracking-tighter truncate max-w-[200px]">{m.display_name || m.name}</span>
                     <div className="flex items-center gap-4">
                       <div className="w-24 h-1 bg-foreground/[0.03] rounded-full overflow-hidden">
                         <div className={`h-full ${colors.bar} opacity-40`} style={{ width: `${m.percentage}%` }}></div>
@@ -240,7 +240,7 @@ const getStatusDisplay = (percentage, resetTime) => {
         {percentage}%
       </span>
       {resetTime && (
-        <span className="text-[9px] font-bold text-foreground/50 tracking-tighter font-mono whitespace-nowrap uppercase">
+        <span className="text-[9px] font-bold text-foreground/75 tracking-tighter font-mono whitespace-nowrap uppercase">
            {formattedTime || (percentage === 100 ? t('accounts.refreshed') : t('accounts.pending'))}
         </span>
       )}
@@ -400,7 +400,7 @@ const AccountCard = ({ account, isSelected, onToggleSelect, onSwitch, dragHandle
             {isSelected && <Check className="w-3 h-3 text-white" strokeWidth={4} />}
           </div>
           
-          <div {...dragHandleProps} className="p-1 hover:bg-foreground/10 rounded cursor-grab active:cursor-grabbing text-foreground/20 hover:text-foreground/40 transition-colors">
+          <div {...dragHandleProps} className="p-1 hover:bg-foreground/10 rounded cursor-grab active:cursor-grabbing text-foreground/45 hover:text-foreground/65 transition-colors">
             <GripVertical className="w-3.5 h-3.5" />
           </div>
           
@@ -413,7 +413,7 @@ const AccountCard = ({ account, isSelected, onToggleSelect, onSwitch, dragHandle
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={(e) => { if (!account.quota?.is_forbidden || !account.quota?.appeal_url) e.preventDefault(); }}
-                  className={`text-[9px] font-black px-1.5 py-0.5 rounded-[4px] uppercase tracking-wider transition-all flex items-center gap-1 shrink-0 ${account.quota?.is_forbidden ? 'bg-red-500/20 text-red-500 border border-red-500/50 animate-pulse cursor-pointer' : account.quota.subscription_tier.includes('ULTRA') ? 'bg-indigo-600/30 text-indigo-400 border border-indigo-500/40 shadow-sm' : account.quota.subscription_tier.includes('PRO') ? 'bg-amber-500/10 text-amber-400 border border-amber-500/50' : 'bg-foreground/5 text-foreground/60 border border-glass-border'}`}
+                  className={`text-[9px] font-black px-1.5 py-0.5 rounded-[4px] uppercase tracking-wider transition-all flex items-center gap-1 shrink-0 ${account.quota?.is_forbidden ? 'bg-red-500/20 text-red-500 border border-red-500/50 animate-pulse cursor-pointer' : account.quota.subscription_tier.includes('ULTRA') ? 'bg-indigo-600/30 text-indigo-400 border border-indigo-500/40 shadow-sm' : account.quota.subscription_tier.includes('PRO') ? 'bg-amber-500/10 text-amber-400 border border-amber-500/50' : 'bg-foreground/5 text-foreground/85 border border-glass-border'}`}
                 >
                   {account.quota?.is_forbidden && <Lock className="w-2.5 h-2.5" />}
                   {account.quota?.subscription_tier?.replace('GOOGLE AI ', '')}
@@ -426,7 +426,7 @@ const AccountCard = ({ account, isSelected, onToggleSelect, onSwitch, dragHandle
               )}
               {isEditingLabel && (
                 <div className="flex items-center gap-1 bg-foreground/5 border border-glass-border p-0.5 rounded-md" onClick={e => e.stopPropagation()}>
-                  <input autoFocus type="text" value={labelInput} onChange={(e) => setLabelInput(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') handleUpdateLabel(e); if (e.key === 'Escape') setIsEditingLabel(false); }} className="bg-transparent border-none outline-none text-[9px] text-foreground/90 w-20 px-1" />
+                  <input autoFocus type="text" value={labelInput} onChange={(e) => setLabelInput(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') handleUpdateLabel(e); if (e.key === 'Escape') setIsEditingLabel(false); }} className="bg-transparent border-none outline-none text-[9px] text-foreground w-20 px-1" />
                   <button onClick={handleUpdateLabel} className="text-emerald-400 p-0.5 hover:bg-emerald-400/10 rounded"><Check className="w-2.5 h-2.5" /></button>
                 </div>
               )}
@@ -442,7 +442,7 @@ const AccountCard = ({ account, isSelected, onToggleSelect, onSwitch, dragHandle
           ) : (
             <div className="flex items-center gap-1 text-emerald-500/80 font-bold text-[9px] uppercase tracking-tighter bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/30 shadow-sm magnetic"><ShieldCheck className="w-2.5 h-2.5" /> {t('accounts.statusActive')}</div>
           )}
-          <span className="text-foreground/20 font-mono font-bold uppercase text-[9px] tracking-[0.1em]">{account.quota?.last_updated ? new Date(account.quota.last_updated * 1000).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : '00:00'}</span>
+          <span className="text-foreground/45 font-mono font-bold uppercase text-[9px] tracking-[0.1em]">{account.quota?.last_updated ? new Date(account.quota.last_updated * 1000).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : '00:00'}</span>
         </div>
       </div>
 
@@ -454,7 +454,7 @@ const AccountCard = ({ account, isSelected, onToggleSelect, onSwitch, dragHandle
               <span className="text-[10px] font-bold text-red-500 uppercase truncate">{t('accounts.accountAnomaly')}</span>
             </div>
             <div className="flex items-center gap-1.5 relative z-10 shrink-0">
-               <button onClick={(e) => { e.stopPropagation(); setIsReasonOpen(true); }} className="text-[9px] font-black text-foreground/20 hover:text-blue-400 border border-glass-border px-2 py-0.5 rounded-[4px] bg-foreground/5 transition-all">{t('accounts.reason')}</button>
+               <button onClick={(e) => { e.stopPropagation(); setIsReasonOpen(true); }} className="text-[9px] font-black text-foreground/45 hover:text-blue-400 border border-glass-border px-2 py-0.5 rounded-[4px] bg-foreground/5 transition-all">{t('accounts.reason')}</button>
                <a 
                  href={account.quota?.appeal_url} 
                  target="_blank" 
@@ -472,7 +472,7 @@ const AccountCard = ({ account, isSelected, onToggleSelect, onSwitch, dragHandle
               return (
                 <div key={m.name} className="group/model relative">
                   <div className="flex justify-between items-end mb-1 uppercase font-mono tracking-wider text-[9px] font-black">
-                    <span className="flex items-center gap-1.5 text-foreground/20 group-hover/model:text-foreground/40 transition-colors">
+                    <span className="flex items-center gap-1.5 text-foreground/45 group-hover/model:text-foreground/75 transition-colors">
                       <Cpu className={`w-2.5 h-2.5 ${colors.icon}`} /> {m.display_name || m.name}
                     </span>
                     {getStatusDisplay(m.percentage, m.reset_time)}
@@ -485,23 +485,23 @@ const AccountCard = ({ account, isSelected, onToggleSelect, onSwitch, dragHandle
             })}
           </div>
         ) : (
-          <div className="py-2 text-[10px] text-foreground/10 italic text-center border border-dashed border-glass-border rounded-xl uppercase">{t('accounts.noQuotaSynced')}</div>
+          <div className="py-2 text-[10px] text-foreground/45 italic text-center border border-dashed border-glass-border rounded-xl uppercase">{t('accounts.noQuotaSynced')}</div>
         )}
       </div>
         
       <div className="pt-2 mt-auto border-t border-glass-border flex items-center justify-end">
         <div className="flex items-center gap-1.5 magnetic">
-          <button onClick={(e) => { e.stopPropagation(); setIsDetailsOpen(true); }} className="p-1.5 text-foreground/40 hover:text-blue-400 bg-foreground/[0.05] border border-glass-border rounded-lg transition-colors shadow-sm" title={t('accounts.details')}><Maximize2 className="w-3.5 h-3.5" /></button>
-          <button onClick={(e) => { e.stopPropagation(); setIsEditingLabel(!isEditingLabel); }} className={`p-1.5 bg-foreground/[0.05] border border-glass-border rounded-lg transition-colors shadow-sm ${account.label ? 'text-amber-500' : 'text-foreground/40'}`} title={t('accounts.tag')}><Tag className="w-3.5 h-3.5" /></button>
-          <button onClick={handleRefresh} disabled={isRefreshing} className={`p-1.5 bg-foreground/[0.05] border border-glass-border rounded-lg transition-colors shadow-sm ${isRefreshing ? 'text-emerald-400' : 'text-foreground/40 hover:text-emerald-400'}`} title={t('accounts.refresh')}><RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin' : ''}`} /></button>
-          <button onClick={handleToggleProxy} disabled={isTogglingProxy} className={`p-1.5 bg-foreground/[0.05] border border-glass-border rounded-lg transition-colors shadow-sm ${account.is_proxy_disabled ? 'text-amber-500' : 'text-foreground/40 hover:text-blue-400'}`} title={account.is_proxy_disabled ? t('accounts.enableProxy') : t('accounts.disableProxy')}>
+          <button onClick={(e) => { e.stopPropagation(); setIsDetailsOpen(true); }} className="p-1.5 text-foreground/65 hover:text-blue-400 bg-foreground/[0.05] border border-glass-border rounded-lg transition-colors shadow-sm" title={t('accounts.details')}><Maximize2 className="w-3.5 h-3.5" /></button>
+          <button onClick={(e) => { e.stopPropagation(); setIsEditingLabel(!isEditingLabel); }} className={`p-1.5 bg-foreground/[0.05] border border-glass-border rounded-lg transition-colors shadow-sm ${account.label ? 'text-amber-500' : 'text-foreground/65'}`} title={t('accounts.tag')}><Tag className="w-3.5 h-3.5" /></button>
+          <button onClick={handleRefresh} disabled={isRefreshing} className={`p-1.5 bg-foreground/[0.05] border border-glass-border rounded-lg transition-colors shadow-sm ${isRefreshing ? 'text-emerald-400' : 'text-foreground/65 hover:text-emerald-400'}`} title={t('accounts.refresh')}><RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin' : ''}`} /></button>
+          <button onClick={handleToggleProxy} disabled={isTogglingProxy} className={`p-1.5 bg-foreground/[0.05] border border-glass-border rounded-lg transition-colors shadow-sm ${account.is_proxy_disabled ? 'text-amber-500' : 'text-foreground/65 hover:text-blue-400'}`} title={account.is_proxy_disabled ? t('accounts.enableProxy') : t('accounts.disableProxy')}>
             {isTogglingProxy ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : account.is_proxy_disabled ? <ToggleRight className="w-4 h-4" /> : <ToggleLeft className="w-4 h-4" />}
           </button>
-          <button onClick={handleExport} className="p-1.5 text-foreground/40 hover:text-amber-400 bg-foreground/[0.05] border border-glass-border rounded-lg transition-colors shadow-sm" title={t('accounts.export')}><Download className="w-3.5 h-3.5" /></button>
+          <button onClick={handleExport} className="p-1.5 text-foreground/65 hover:text-amber-400 bg-foreground/[0.05] border border-glass-border rounded-lg transition-colors shadow-sm" title={t('accounts.export')}><Download className="w-3.5 h-3.5" /></button>
           <button onClick={handleSwitch} disabled={isSwitching} className={`p-1.5 border rounded-lg transition-all shadow-[0_0_15px_rgba(59,130,246,0.1)] group/switch ${isSwitching ? 'text-emerald-400 bg-foreground/[0.05] border-glass-border' : 'text-blue-500/60 hover:text-blue-400 bg-blue-500/[0.08] hover:bg-blue-500/20 border-blue-500/20'}`} title={t('accounts.switchToIde')}>
             {isSwitching ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <ArrowRightLeft className="w-3.5 h-3.5 group-hover/switch:scale-110 transition-transform" />}
           </button>
-          <button onClick={handleDelete} disabled={isDeleting} className="p-1.5 text-foreground/40 hover:text-red-500 bg-foreground/[0.05] border border-glass-border rounded-lg transition-colors shadow-sm" title={t('accounts.delete')}><Trash2 className="w-3.5 h-3.5" /></button>
+          <button onClick={handleDelete} disabled={isDeleting} className="p-1.5 text-foreground/65 hover:text-red-500 bg-foreground/[0.05] border border-glass-border rounded-lg transition-colors shadow-sm" title={t('accounts.delete')}><Trash2 className="w-3.5 h-3.5" /></button>
         </div>
       </div>
 
@@ -661,7 +661,7 @@ const AccountRow = ({ account, isSelected, onToggleSelect, onSwitch, dragHandleP
             {isSelected && <Check className="w-3 h-3 text-white" strokeWidth={4} />}
           </div>
         </div>
-        <div {...dragHandleProps} className="p-1 hover:bg-foreground/10 rounded cursor-grab active:cursor-grabbing text-foreground/20 hover:text-foreground/40 transition-colors">
+        <div {...dragHandleProps} className="p-1 hover:bg-foreground/10 rounded cursor-grab active:cursor-grabbing text-foreground/45 hover:text-foreground/65 transition-colors">
           <GripVertical className="w-4 h-4" />
         </div>
         <div className="flex flex-col min-w-0 flex-1">
@@ -677,7 +677,7 @@ const AccountRow = ({ account, isSelected, onToggleSelect, onSwitch, dragHandleP
                 account.quota.is_forbidden ? 'bg-rose-500/30 text-rose-400 border-rose-500/40 shadow-sm animate-pulse cursor-pointer' :
                 account.quota.subscription_tier.includes('ULTRA') ? 'bg-indigo-600/30 text-indigo-300 border-indigo-500/40' :
                 account.quota.subscription_tier.includes('PRO') ? 'bg-amber-500/25 text-amber-300 border-amber-500/40' :
-                'bg-foreground/5 text-foreground/40 border-glass-border'
+                'bg-foreground/5 text-foreground/65 border-glass-border'
               }`}
               >
                 {account.quota?.is_forbidden && <Lock className="w-2.5 h-2.5 inline mr-1" />}
@@ -686,11 +686,11 @@ const AccountRow = ({ account, isSelected, onToggleSelect, onSwitch, dragHandleP
             )}
             {isEditingLabel ? (
               <div className="flex items-center gap-1 bg-foreground/5 border border-white/20 rounded p-0.5" onClick={e => e.stopPropagation()}>
-                <input autoFocus type="text" value={labelInput} onChange={(e) => setLabelInput(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') handleUpdateLabel(e); if (e.key === 'Escape') setIsEditingLabel(false); }} className="bg-transparent border-none outline-none text-[9px] text-foreground/90 w-16 px-0.5" />
+                <input autoFocus type="text" value={labelInput} onChange={(e) => setLabelInput(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') handleUpdateLabel(e); if (e.key === 'Escape') setIsEditingLabel(false); }} className="bg-transparent border-none outline-none text-[9px] text-foreground w-16 px-0.5" />
                 <button onClick={handleUpdateLabel} className="text-emerald-400 p-0.5 hover:bg-emerald-400/10 rounded"><Check className="w-2.5 h-2.5" /></button>
               </div>
             ) : (
-              <span onClick={(e) => { e.stopPropagation(); setIsEditingLabel(true); }} className={`px-1.5 py-0.5 rounded-[3px] text-[9.5px] font-black italic border border-dashed transition-all ${account.label ? 'text-amber-400 border-amber-500/30 bg-amber-500/10' : 'text-foreground/40 border-glass-border hover:text-foreground/60 hover:bg-foreground/5'}`}>
+              <span onClick={(e) => { e.stopPropagation(); setIsEditingLabel(true); }} className={`px-1.5 py-0.5 rounded-[3px] text-[9.5px] font-black italic border border-dashed transition-all ${account.label ? 'text-amber-400 border-amber-500/30 bg-amber-500/10' : 'text-foreground/65 border-glass-border hover:text-foreground/85 hover:bg-foreground/5'}`}>
                 {account.label || `+ ${t('accounts.tag')}`}
               </span>
             )}
@@ -706,7 +706,7 @@ const AccountRow = ({ account, isSelected, onToggleSelect, onSwitch, dragHandleP
               <ShieldAlert className="w-4 h-4 shrink-0 opacity-60" /> {t('accounts.accountAnomaly')}
             </div>
             <div className="flex items-center gap-1.5 relative z-10 shrink-0 ml-2">
-               <button onClick={(e) => { e.stopPropagation(); setIsReasonOpen(true); }} className="text-[9px] font-black text-foreground/20 hover:text-blue-400 border border-glass-border px-1.5 py-0.5 rounded-[4px] bg-foreground/5 transition-all truncate">{t('accounts.reason')}</button>
+               <button onClick={(e) => { e.stopPropagation(); setIsReasonOpen(true); }} className="text-[9px] font-black text-foreground/45 hover:text-blue-400 border border-glass-border px-1.5 py-0.5 rounded-[4px] bg-foreground/5 transition-all truncate">{t('accounts.reason')}</button>
                <a 
                  href={account.quota?.appeal_url} 
                  target="_blank" 
@@ -734,7 +734,7 @@ const AccountRow = ({ account, isSelected, onToggleSelect, onSwitch, dragHandleP
                   </div>
                   <div className="flex justify-between items-center text-[8px] font-black font-mono tracking-tighter truncate uppercase mt-0.5 min-w-0 gap-1 opacity-60">
                     <span className={`${colors.text} shrink-0`}>{m.percentage}%</span>
-                    <span className="text-foreground/40 truncate">{m.reset_time ? formatResetTime(m.reset_time) : t('accounts.refreshed')}</span>
+                    <span className="text-foreground/65 truncate">{m.reset_time ? formatResetTime(m.reset_time) : t('accounts.refreshed')}</span>
                   </div>
                 </div>
               );
@@ -756,7 +756,7 @@ const AccountRow = ({ account, isSelected, onToggleSelect, onSwitch, dragHandleP
             <span className="truncate">{account.is_proxy_disabled ? t('accounts.statusBypassed') : t('accounts.statusActive')}</span>
           </div>
         )}
-        <div className="text-[8px] text-foreground/20 font-mono font-bold tracking-[0.1em] flex items-center gap-1 truncate uppercase">
+        <div className="text-[8px] text-foreground/45 font-mono font-bold tracking-[0.1em] flex items-center gap-1 truncate uppercase">
           <span className="shrink-0">{account.quota?.last_updated ? new Date(account.quota.last_updated * 1000).toLocaleDateString([], {month:'2-digit', day:'2-digit'}) : '00/00'}</span>
           <span className="text-foreground/40 shrink-0">{account.quota?.last_updated ? new Date(account.quota.last_updated * 1000).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit', hour12: false}) : '00:00'}</span>
         </div>
@@ -764,17 +764,17 @@ const AccountRow = ({ account, isSelected, onToggleSelect, onSwitch, dragHandleP
 
       {/* Column 4: Actions (20%) */}
       <div className="w-[20%] min-w-[170px] flex items-center justify-end gap-1.5 transition-all shrink-0 pr-6 flex-wrap">
-        <button onClick={(e) => { e.stopPropagation(); setIsDetailsOpen(true); }} className="p-1.5 text-foreground/40 hover:text-blue-400 bg-foreground/[0.03] hover:bg-blue-400/5 border border-glass-border rounded-lg transition-all" title={t('accounts.details')}><Maximize2 className="w-3.5 h-3.5" /></button>
-        <button onClick={handleRefresh} disabled={isRefreshing} className="p-1.5 text-foreground/40 hover:text-emerald-400 bg-foreground/[0.03] hover:bg-emerald-400/5 border border-glass-border rounded-lg transition-all" title={t('accounts.refresh')}><RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin' : ''}`} /></button>
-        <button onClick={(e) => { e.stopPropagation(); setIsEditingLabel(true); }} className={`p-1.5 border border-glass-border rounded-lg transition-all bg-foreground/[0.03] ${account.label ? 'text-amber-500 hover:text-amber-400 hover:bg-amber-400/5' : 'text-foreground/40 hover:text-foreground hover:bg-foreground/10'}`} title={t('accounts.tag')}><Tag className="w-3.5 h-3.5" /></button>
-        <button onClick={handleToggleProxy} disabled={isTogglingProxy} className={`p-1.5 border border-glass-border rounded-lg transition-all bg-foreground/[0.03] ${account.is_proxy_disabled ? 'text-amber-500 hover:text-amber-400 hover:bg-amber-400/5' : 'text-foreground/40 hover:text-blue-400 hover:bg-blue-400/5'}`} title={account.is_proxy_disabled ? t('accounts.enableProxy') : t('accounts.disableProxy')}>
+        <button onClick={(e) => { e.stopPropagation(); setIsDetailsOpen(true); }} className="p-1.5 text-foreground/65 hover:text-blue-400 bg-foreground/[0.03] hover:bg-blue-400/5 border border-glass-border rounded-lg transition-all" title={t('accounts.details')}><Maximize2 className="w-3.5 h-3.5" /></button>
+        <button onClick={handleRefresh} disabled={isRefreshing} className="p-1.5 text-foreground/65 hover:text-emerald-400 bg-foreground/[0.03] hover:bg-emerald-400/5 border border-glass-border rounded-lg transition-all" title={t('accounts.refresh')}><RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin' : ''}`} /></button>
+        <button onClick={(e) => { e.stopPropagation(); setIsEditingLabel(true); }} className={`p-1.5 border border-glass-border rounded-lg transition-all bg-foreground/[0.03] ${account.label ? 'text-amber-500 hover:text-amber-400 hover:bg-amber-400/5' : 'text-foreground/65 hover:text-foreground hover:bg-foreground/10'}`} title={t('accounts.tag')}><Tag className="w-3.5 h-3.5" /></button>
+        <button onClick={handleToggleProxy} disabled={isTogglingProxy} className={`p-1.5 border border-glass-border rounded-lg transition-all bg-foreground/[0.03] ${account.is_proxy_disabled ? 'text-amber-500 hover:text-amber-400 hover:bg-amber-400/5' : 'text-foreground/65 hover:text-blue-400 hover:bg-blue-400/5'}`} title={account.is_proxy_disabled ? t('accounts.enableProxy') : t('accounts.disableProxy')}>
           {isTogglingProxy ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : account.is_proxy_disabled ? <ToggleRight className="w-4 h-4" /> : <ToggleLeft className="w-4 h-4" />}
         </button>
-        <button onClick={(e) => { e.stopPropagation(); exportAccount(account); }} className="p-1.5 text-foreground/40 hover:text-amber-400 bg-foreground/[0.03] hover:bg-amber-400/5 border border-glass-border rounded-lg transition-all" title={t('accounts.export')}><Download className="w-3.5 h-3.5" /></button>
+        <button onClick={(e) => { e.stopPropagation(); exportAccount(account); }} className="p-1.5 text-foreground/65 hover:text-amber-400 bg-foreground/[0.03] hover:bg-amber-400/5 border border-glass-border rounded-lg transition-all" title={t('accounts.export')}><Download className="w-3.5 h-3.5" /></button>
         <button onClick={handleSwitch} disabled={isSwitching} className={`p-1.5 border rounded-lg transition-all group/switch ${isSwitching ? 'text-emerald-400 bg-foreground/[0.03] border-glass-border' : 'text-blue-500/50 hover:text-blue-400 bg-blue-500/[0.05] hover:bg-blue-500/10 border-blue-500/20'}`} title={t('accounts.switchToIde')}>
           {isSwitching ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <ArrowRightLeft className="w-3.5 h-3.5 group-hover/switch:scale-110 transition-transform" />}
         </button>
-        <button onClick={handleDelete} disabled={isDeleting} className="p-1.5 text-foreground/40 hover:text-rose-500 bg-foreground/[0.03] hover:bg-rose-500/5 border border-glass-border rounded-lg transition-all" title={t('accounts.delete')}><Trash2 className="w-3.5 h-3.5" /></button>
+        <button onClick={handleDelete} disabled={isDeleting} className="p-1.5 text-foreground/65 hover:text-rose-500 bg-foreground/[0.03] hover:bg-rose-500/5 border border-glass-border rounded-lg transition-all" title={t('accounts.delete')}><Trash2 className="w-3.5 h-3.5" /></button>
       </div>
 
       <ModelDetailsModal isOpen={isDetailsOpen} onClose={() => setIsDetailsOpen(false)} account={account} />

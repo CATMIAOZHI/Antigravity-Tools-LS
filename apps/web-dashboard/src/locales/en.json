@@ -1,7 +1,7 @@
 {
     "app": {
         "title": "Antigravity Tools LS",
-        "subtitle": "Antigravity Tools LS v0.0.1 (Experimental)",
+        "subtitle": "Antigravity Tools LS v0.0.2 (Experimental)",
         "statusReady": "Service Core Ready",
         "sourceCode": "Source Code"
     },
@@ -25,7 +25,7 @@
         "headers": "Authorization Headers",
         "payload": "Request Payload",
         "securityTitle": "Full-Link Proxy Strategy",
-        "securityDesc": "Based on v0.0.1 experimental compatibility protocol. All requests flow through pooled accounts, supporting Metadata mandatory injection and UA anti-ban masking."
+        "securityDesc": "Based on v0.0.2 experimental compatibility protocol. All requests flow through pooled accounts, supporting Metadata mandatory injection and UA anti-ban masking."
     },
     "accounts": {
         "title": "Google Account Management",
@@ -135,7 +135,7 @@
     },
     "settings": {
         "title": "Global Parameter Settings",
-        "subtitle": "Core Engine v0.0.1",
+        "subtitle": "Core Engine v0.0.2",
         "appearance": "Appearance Preference",
         "quotaStatus": "Quota Sync",
         "logs": "Log Strategy",

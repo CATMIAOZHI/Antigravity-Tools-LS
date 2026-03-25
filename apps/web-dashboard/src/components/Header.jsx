@@ -49,7 +49,7 @@ const Header = () => {
         {/* Global Sidebar Toggle */}
         <button 
           onClick={toggleSidebar}
-          className="w-10 h-10 rounded-xl btn-matrix-glass text-foreground/40 hover:text-blue-400 hover:border-blue-500/30 transition-all shrink-0 mt-0.5"
+          className="w-10 h-10 rounded-xl btn-matrix-glass text-foreground/65 hover:text-blue-400 hover:border-blue-500/30 transition-all shrink-0 mt-0.5"
           title={sidebarCollapsed ? t('nav.expand') : t('nav.collapse')}
         >
           {sidebarCollapsed ? <PanelLeftOpen className="w-5 h-5" /> : <PanelLeftClose className="w-5 h-5" />}
@@ -58,9 +58,9 @@ const Header = () => {
         <div className="flex flex-col gap-1">
           <h1 className="text-2xl font-extrabold tracking-tight text-foreground">
             {getPageTitle()}
-            <span className="ml-2 text-foreground/20 font-black uppercase text-[14px]">({getPageTitle().split(' ')[0]})</span>
+            <span className="ml-2 text-foreground/45 font-black uppercase text-[14px]">({getPageTitle().split(' ')[0]})</span>
           </h1>
-          <div className="flex items-center gap-2 font-mono text-[10px] font-bold text-foreground/20 tracking-widest uppercase">
+          <div className="flex items-center gap-2 font-mono text-[10px] font-bold text-foreground/45 tracking-widest uppercase">
             {t('header.integrity')}: <span className={
               systemStatus.integrity === 'OPTIMAL' ? 'text-emerald-400' : 
               systemStatus.integrity === 'DEGRADED' ? 'text-amber-400' : 'text-foreground/40'
@@ -98,7 +98,7 @@ const Header = () => {
         {/* Theme Toggle */}
         <button 
           onClick={toggleTheme}
-          className="w-10 h-10 rounded-full btn-matrix-glass text-foreground/40"
+          className="w-10 h-10 rounded-full btn-matrix-glass text-foreground/65"
         >
           {theme === 'dark' ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4 text-orange-500" />}
         </button>

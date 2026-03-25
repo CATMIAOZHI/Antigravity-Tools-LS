@@ -5,7 +5,8 @@ const isTauri = typeof window !== 'undefined' && (
   !!window.__TAURI__ || 
   window.location.protocol === 'tauri:' || 
   window.location.hostname === 'tauri.localhost' ||
-  window.location.host === 'tauri.localhost'
+  window.location.host === 'tauri.localhost' ||
+  window.location.port === '1420' // Tauri dev 默认端口
 );
 
 // 生产环境下强制直连 Axum (127.0.0.1:5173)，开发环境下使用 Vite Proxy (/v1)

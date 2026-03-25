@@ -401,7 +401,7 @@ const Integration = () => {
              </div>
              <h1 className="text-2xl font-black italic tracking-tighter uppercase">{t('integration.title')} <span className="text-foreground/20">{t('integration.subtitle')}</span></h1>
           </div>
-          <p className="text-[10px] font-black text-foreground/20 uppercase tracking-[0.4em] mt-1 pl-1">{t('integration.desc')}</p>
+          <p className="text-[10px] font-black text-foreground/45 uppercase tracking-[0.4em] mt-1 pl-1">{t('integration.desc')}</p>
         </div>
 
         <div className="flex bg-foreground/[0.03] border border-glass-border p-1 rounded-full overflow-hidden shadow-inner">
@@ -426,7 +426,7 @@ const Integration = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="space-y-4">
                 <div className="flex items-center justify-between px-1">
-                  <label className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.3em]">{t('integration.apiBaseUrl')}</label>
+                  <label className="text-[10px] font-black text-foreground/50 uppercase tracking-[0.3em]">{t('integration.apiBaseUrl')}</label>
                   <span className="text-[9px] font-bold text-emerald-500/40 uppercase tracking-widest flex items-center gap-1"><ShieldCheck className="w-3 h-3" /> {t('integration.sslActive')}</span>
                 </div>
                 <div className="flex flex-col gap-2">
@@ -436,12 +436,12 @@ const Integration = () => {
                       {copiedField === 'url' ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
                     </button>
                   </div>
-                  <p className="px-2 text-[9px] font-bold text-foreground/20 italic tracking-tight">Backend: 5173 | Proxy: 3000</p>
+                  <p className="px-2 text-[9px] font-bold text-foreground/45 italic tracking-tight">Backend: 5173 | Dashboard Path: /</p>
                 </div>
               </div>
               <div className="space-y-4">
                 <div className="flex items-center justify-between px-1">
-                  <label className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.3em]">{t('integration.universalKey')}</label>
+                  <label className="text-[10px] font-black text-foreground/50 uppercase tracking-[0.3em]">{t('integration.universalKey')}</label>
                   <div className="flex items-center gap-3">
                     <button onClick={() => setShowKey(!showKey)} className="text-[9px] font-bold text-blue-500/60 uppercase tracking-widest flex items-center gap-1 hover:text-blue-500 transition-colors">
                       {showKey ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
@@ -451,7 +451,7 @@ const Integration = () => {
                   </div>
                 </div>
                 <div className="flex items-center gap-3 bg-background/40 border border-white/[0.05] rounded-2xl px-5 py-4 group/field hover:border-blue-500/30 transition-all cursor-pointer" onClick={() => copyToClipboard(defaultKey, 'key')}>
-                  <code className="text-sm font-mono text-foreground/60 truncate flex-1 italic">{showKey ? defaultKey : maskedKey}</code>
+                  <code className="text-sm font-mono text-foreground/65 truncate flex-1 italic">{showKey ? defaultKey : maskedKey}</code>
                   <button 
                     onClick={(e) => { e.stopPropagation(); copyToClipboard(defaultKey, 'key'); }}
                     className={`p-2 rounded-lg transition-all ${copiedField === 'key' ? 'bg-emerald-500 text-white' : 'bg-foreground/5 text-foreground/40 hover:text-foreground'}`}
@@ -498,11 +498,11 @@ const Integration = () => {
                           {api.method}
                         </div>
                       </div>
-                      <p className="text-[10px] text-foreground/30 font-bold leading-relaxed line-clamp-2">{api.desc}</p>
+                      <p className="text-[10px] text-foreground/50 font-bold leading-relaxed line-clamp-2">{api.desc}</p>
                     </div>
 
                     <div className="mt-4 flex items-center justify-between">
-                       <code className="text-[9px] text-foreground/40 font-mono truncate">{api.path}</code>
+                       <code className="text-[9px] text-foreground/60 font-mono truncate">{api.path}</code>
                        <div className="p-1 px-2 rounded-md bg-foreground/5 text-[8px] font-black uppercase tracking-tighter text-foreground/40 group-hover/item:text-blue-500 transition-all">{t('integration.viewDocs')}</div>
                     </div>
                   </div>
@@ -525,7 +525,7 @@ const Integration = () => {
                               <h2 className="text-xl font-black italic tracking-tighter uppercase">{selectedApi.name}</h2>
                               <span className={`px-2 py-0.5 rounded-md bg-background/60 border border-glass-border text-[10px] font-black font-mono ${selectedApi.method === 'POST' ? 'text-blue-400' : 'text-emerald-400'}`}>{selectedApi.method}</span>
                            </div>
-                           <p className="text-[10px] font-bold text-foreground/30 tracking-widest uppercase mt-1">{selectedApi.desc}</p>
+                           <p className="text-[10px] font-bold text-foreground/55 tracking-widest uppercase mt-1">{selectedApi.desc}</p>
                         </div>
                      </div>
                      <button onClick={() => setSelectedApi(null)} className="p-3 rounded-full bg-foreground/5 hover:bg-foreground/10 text-foreground/40 hover:text-foreground transition-all">
@@ -536,7 +536,7 @@ const Integration = () => {
                   <div className="flex-1 overflow-y-auto p-8 space-y-8 scrollbar-hide">
                      <div className="space-y-4">
                         <div className="flex items-center justify-between px-1">
-                           <span className="text-[10px] font-black text-foreground/20 uppercase tracking-[0.4em]">{t('integration.requestEndpoint')}</span>
+                           <span className="text-[10px] font-black text-foreground/45 uppercase tracking-[0.4em]">{t('integration.requestEndpoint')}</span>
                         </div>
                         <div className="flex items-center gap-3 bg-background/60 border border-glass-border rounded-2xl px-6 py-4">
                            <code className="text-sm font-mono text-blue-400 font-bold flex-1">{baseUrl}{selectedApi.path}</code>
@@ -550,7 +550,7 @@ const Integration = () => {
                         <div className="space-y-4">
                            <div className="flex items-center gap-2 px-1">
                               <Shield className="w-3 h-3 text-orange-400" />
-                              <span className="text-[10px] font-black text-foreground/20 uppercase tracking-[0.4em]">{t('integration.requiredHeaders')}</span>
+                               <span className="text-[10px] font-black text-foreground/45 uppercase tracking-[0.4em]">{t('integration.requiredHeaders')}</span>
                            </div>
                            <div className="relative group">
                               <pre className="bg-background/60 border border-glass-border rounded-2xl p-6 text-[11px] font-mono leading-relaxed text-foreground/60 overflow-hidden whitespace-pre-wrap">
@@ -566,7 +566,7 @@ const Integration = () => {
                            <div className="space-y-4">
                               <div className="flex items-center gap-2 px-1">
                                  <FileJson className="w-3 h-3 text-emerald-400" />
-                                 <span className="text-[10px] font-black text-foreground/20 uppercase tracking-[0.4em]">{t('integration.payloadExample')}</span>
+                                  <span className="text-[10px] font-black text-foreground/45 uppercase tracking-[0.4em]">{t('integration.payloadExample')}</span>
                               </div>
                               <div className="relative group">
                                  <pre className="bg-background/60 border border-glass-border rounded-2xl p-6 text-[11px] font-mono leading-relaxed text-blue-400/80 overflow-hidden whitespace-pre-wrap">
@@ -583,7 +583,7 @@ const Integration = () => {
                      <div className="space-y-4">
                         <div className="flex items-center gap-2 px-1">
                            <Terminal className="w-3 h-3 text-blue-400" />
-                           <span className="text-[10px] font-black text-foreground/20 uppercase tracking-[0.4em]">{t('integration.curlOneLiner')}</span>
+                            <span className="text-[10px] font-black text-foreground/45 uppercase tracking-[0.4em]">{t('integration.curlOneLiner')}</span>
                         </div>
                         <div className="relative group">
                            <div className="bg-blue-600/5 border border-blue-500/20 rounded-2xl p-6 font-mono text-[11px] leading-relaxed break-all text-blue-400 pr-12">
@@ -600,7 +600,7 @@ const Integration = () => {
                   </div>
 
                   <div className="p-6 bg-foreground/[0.02] border-t border-glass-border text-center">
-                     <p className="text-[9px] font-bold text-foreground/20 uppercase tracking-[0.3em]">{t('app.title')} {t('app.subtitle')} Core v0.0.1</p>
+                     <p className="text-[9px] font-bold text-foreground/45 uppercase tracking-[0.3em]">{t('app.title')} {t('app.subtitle')} Core v0.0.1</p>
                   </div>
                </div>
             </div>
@@ -610,18 +610,18 @@ const Integration = () => {
         <div className="space-y-6 animate-in slide-in-from-bottom-2 duration-500">
            <div className="flex flex-col md:flex-row justify-between items-center gap-4 bg-foreground/[0.02] border border-glass-border p-4 rounded-3xl">
               <div className="relative group w-full md:w-96">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground/20 group-focus-within:text-blue-500 transition-colors" />
+                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground/45 group-focus-within:text-blue-500 transition-colors" />
                 <input type="text" placeholder={t('integration.searchModels')} className="w-full bg-foreground/[0.03] border border-glass-border px-12 py-3 rounded-2xl text-[12px] font-bold outline-none focus:border-blue-500/50 transition-all font-mono" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
               </div>
               <div className="flex items-center gap-6 px-4">
-                 <div className="flex flex-col items-end"><span className="text-[9px] font-black text-foreground/20 uppercase tracking-widest">{t('integration.availableUnits')}</span><span className="text-sm font-black italic">{allModels.length} MATRIX UNITS</span></div>
+                  <div className="flex flex-col items-end"><span className="text-[9px] font-black text-foreground/45 uppercase tracking-widest">{t('integration.availableUnits')}</span><span className="text-sm font-black italic">{allModels.length} MATRIX UNITS</span></div>
                  <div className="h-8 w-px bg-foreground/10"></div>
-                 <div className="flex flex-col items-end"><span className="text-[9px] font-black text-foreground/20 uppercase tracking-widest">{t('integration.activeProviders')}</span><span className="text-sm font-black italic text-blue-500 uppercase">{[...new Set(allModels.map(m => m.provider))].length} GROUPS</span></div>
+                  <div className="flex flex-col items-end"><span className="text-[9px] font-black text-foreground/45 uppercase tracking-widest">{t('integration.activeProviders')}</span><span className="text-sm font-black italic text-blue-500 uppercase">{[...new Set(allModels.map(m => m.provider))].length} GROUPS</span></div>
               </div>
            </div>
 
            <div className="bg-foreground/[0.01] border border-glass-border rounded-[2.5rem] overflow-hidden shadow-2xl relative">
-              <div className="flex items-center px-8 py-4 bg-foreground/[0.02] border-b border-glass-border text-[10px] font-black uppercase tracking-[0.25em] text-foreground/40">
+               <div className="flex items-center px-8 py-4 bg-foreground/[0.02] border-b border-glass-border text-[10px] font-black uppercase tracking-[0.25em] text-foreground/60">
                 <div className="w-[50%]">{t('integration.matrixUnits')}</div>
                 <div className="w-[30%]">{t('integration.activeProvidersHeader')}</div>
                 <div className="w-[20%] text-right pr-4">{t('integration.copyIdHeader')}</div>
@@ -638,7 +638,7 @@ const Integration = () => {
                     {filteredModels.filter(m => m.recommended).length > 0 && (
                        <>
                          <div className="px-8 py-3 bg-blue-500/[0.03] flex items-center gap-4 border-b border-glass-border">
-                            <span className="text-[9px] font-black uppercase tracking-[0.4em] text-foreground/20 whitespace-nowrap">{t('integration.coreAssets')}</span>
+                            <span className="text-[9px] font-black uppercase tracking-[0.4em] text-foreground/45 whitespace-nowrap">{t('integration.coreAssets')}</span>
                             <div className="h-px flex-1 bg-foreground/[0.03]"></div>
                          </div>
                          {filteredModels.filter(m => m.recommended).map(m => (
@@ -651,7 +651,7 @@ const Integration = () => {
                     {filteredModels.filter(m => !m.recommended).length > 0 && (
                        <>
                          <div className="px-8 py-3 bg-foreground/[0.005] flex items-center gap-4 border-b border-glass-border mt-10">
-                            <span className="text-[9px] font-black uppercase tracking-[0.4em] text-foreground/10 whitespace-nowrap">{t('integration.infrastructure')}</span>
+                            <span className="text-[9px] font-black uppercase tracking-[0.4em] text-foreground/45 whitespace-nowrap">{t('integration.infrastructure')}</span>
                             <div className="h-px flex-1 bg-foreground/[0.01]"></div>
                          </div>
                          {filteredModels.filter(m => !m.recommended).map(m => (

@@ -24,12 +24,14 @@ COPY ls-orchestrator ./ls-orchestrator
 COPY ls-accounts ./ls-accounts
 
 # 编译后端二进制 (由 buildx 自动决定目标架构)
-RUN cargo build --release --bin cli-server
+RUN cargo build --release --bin cli-server --no-default-features
 
 # --- Final Runtime Stage ---
 FROM debian:bookworm-slim
 RUN apt-get update && apt-get install -y \
     libssl3 ca-certificates curl binutils xz-utils \
+    libwayland-client0 libxkbcommon0 libwayland-cursor0 libwayland-egl1 \
+    libnss3 libgbm1 libasound2 \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app

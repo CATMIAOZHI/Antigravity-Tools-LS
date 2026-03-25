@@ -81,7 +81,7 @@ const MinuteInput = ({ value, onChange, label, sublabel, min = 1, max = 10080 })
   return (
     <div className="space-y-3.5">
       <div className="flex items-center justify-between px-1">
-        <label className="text-[10px] font-black text-foreground/45 uppercase tracking-[0.2em]">{label}</label>
+        <label className="text-[10px] font-black text-foreground/65 uppercase tracking-[0.2em]">{label}</label>
         <span className="text-[9px] font-bold text-blue-400 uppercase tracking-widest flex items-center gap-1 bg-blue-500/10 px-2 py-0.5 rounded-md border border-blue-500/20">
           <Clock8 className="w-2.5 h-2.5" /> {formatDisplay(value)}
         </span>
@@ -100,13 +100,13 @@ const MinuteInput = ({ value, onChange, label, sublabel, min = 1, max = 10080 })
             }}
             className="w-full bg-background/50 border border-glass-border rounded-xl py-3 pr-16 pl-8 text-sm font-mono font-black text-blue-400 focus:outline-none focus:border-blue-500/40 transition-all text-center"
           />
-          <div className="absolute right-4 top-1/2 -translate-y-1/2 text-[9px] font-black text-foreground/20 uppercase tracking-widest pointer-events-none group-focus-within/input:text-blue-500/60 transition-colors">{t('settings.mins')}</div>
+          <div className="absolute right-4 top-1/2 -translate-y-1/2 text-[9px] font-black text-foreground/45 uppercase tracking-widest pointer-events-none group-focus-within/input:text-blue-500/60 transition-colors">{t('settings.mins')}</div>
         </div>
         <button onClick={handleInc} className="p-2.5 rounded-xl bg-foreground/5 border border-glass-border text-foreground/60 hover:text-foreground hover:bg-foreground/15 transition-all active:scale-95 shadow-md">
           <Plus className="w-4 h-4" />
         </button>
       </div>
-      {sublabel && <p className="text-[10px] text-foreground/35 font-medium leading-relaxed pl-1">{sublabel}</p>}
+      {sublabel && <p className="text-[10px] text-foreground/60 font-medium leading-relaxed pl-1">{sublabel}</p>}
     </div>
   );
 };
@@ -115,8 +115,8 @@ const MinuteInput = ({ value, onChange, label, sublabel, min = 1, max = 10080 })
 const Toggle = ({ checked, onChange, label, description }) => (
   <div className="flex items-center justify-between gap-6 group/toggle px-1">
     <div className="flex flex-col gap-0.5">
-      <p className="text-sm font-black italic tracking-tight text-foreground/90 group-hover/toggle:text-foreground transition-colors">{label}</p>
-      {description && <p className="text-[9px] font-black text-foreground/35 uppercase tracking-widest leading-relaxed">{description}</p>}
+      <p className="text-sm font-black italic tracking-tight text-foreground">{label}</p>
+      {description && <p className="text-[9px] font-black text-foreground/60 uppercase tracking-widest leading-relaxed">{description}</p>}
     </div>
     <button
       onClick={() => onChange(!checked)}
@@ -141,7 +141,7 @@ const AppearanceTab = () => {
         <SettingsCard>
           <SectionHeader title={t('settings.languageTitle')} subtitle={t('settings.languageSubtitle')} icon={Globe} />
           <div className="space-y-4">
-            <p className="text-xs text-foreground/45 leading-relaxed italic tracking-wide">{t('settings.languageDesc')}</p>
+            <p className="text-xs text-foreground/65 leading-relaxed italic tracking-wide">{t('settings.languageDesc')}</p>
             <div className="flex bg-background/40 border border-glass-border p-1 rounded-xl">
               {[{ v: 'zh', l: '中文' }, { v: 'en', l: 'English' }].map(o => (
                 <button key={o.v} onClick={() => { setLanguage(o.v); i18n.changeLanguage(o.v); }}
@@ -158,7 +158,7 @@ const AppearanceTab = () => {
         <SettingsCard>
           <SectionHeader title={t('settings.themeTitle')} subtitle={t('settings.themeSubtitle')} icon={Layers} accent="indigo" />
           <div className="space-y-4">
-            <p className="text-xs text-foreground/45 leading-relaxed italic tracking-wide">{t('settings.themeDesc')}</p>
+            <p className="text-xs text-foreground/65 leading-relaxed italic tracking-wide">{t('settings.themeDesc')}</p>
             <div className="bg-background/40 border border-glass-border p-4 rounded-xl">
                <Toggle
                   checked={theme === 'dark'}
@@ -192,7 +192,7 @@ const RefreshTab = ({ local, setLocal }) => {
                 </div>
                 <div className="flex items-start gap-3 p-4 rounded-xl bg-blue-500/5 border border-blue-500/10 border-dashed">
                    <Zap className="w-4 h-4 text-blue-500 shrink-0 mt-0.5" />
-                   <p className="text-[10px] text-foreground/30 leading-relaxed">
+                   <p className="text-[10px] text-foreground/55 leading-relaxed">
                      {t('settings.refreshDesc')}
                    </p>
                 </div>
@@ -223,7 +223,7 @@ const LogsTab = ({ local, setLocal }) => {
          <SectionHeader title={t('settings.retentionTitle')} subtitle={t('settings.retentionSubtitle')} icon={History} accent="emerald" />
          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2 space-y-4">
-               <p className="text-[13px] font-black italic text-foreground/80 leading-relaxed">
+               <p className="text-[13px] font-black italic text-foreground leading-relaxed">
                  {t('settings.retentionDesc')}
                </p>
                <div className="flex items-center gap-4">
@@ -239,7 +239,7 @@ const LogsTab = ({ local, setLocal }) => {
             </div>
             
             <div className="bg-background/40 border border-glass-border p-5 rounded-2xl">
-               <span className="text-[9px] font-black text-foreground/20 uppercase tracking-[0.3em] mb-4 block text-center">{t('settings.retentionLabel')}</span>
+               <span className="text-[9px] font-black text-foreground/45 uppercase tracking-[0.3em] mb-4 block text-center">{t('settings.retentionLabel')}</span>
                <div className="grid grid-cols-2 gap-2">
                   {[7,14,30,90].map(n => (
                     <button
@@ -248,7 +248,7 @@ const LogsTab = ({ local, setLocal }) => {
                       className={`py-2.5 rounded-lg text-[10px] font-black transition-all duration-500 ${
                         local.traffic_log_retention_days === n 
                           ? 'bg-emerald-600 text-white shadow-lg' 
-                          : 'bg-foreground/5 text-foreground/30 border border-glass-border hover:text-foreground/60'
+                          : 'bg-foreground/5 text-foreground/55 border border-glass-border hover:text-foreground/80'
                       }`}
                     >{n}D</button>
                   ))}
@@ -346,24 +346,24 @@ const AssetsTab = ({ provisionStatus, versionInfo, isSyncing, onSync, local, set
           <div className="space-y-6">
             <div className="bg-background/40 border border-glass-border rounded-2xl overflow-hidden divide-y divide-glass-border">
               <div className="flex items-center justify-between p-4 px-6 group/row">
-                <span className="text-[10px] text-foreground/45 font-black uppercase tracking-[0.3em]">{t('settings.projectVersion')}</span>
+                <span className="text-[10px] text-foreground/65 font-black uppercase tracking-[0.3em]">{t('settings.projectVersion')}</span>
                 <span className="text-xs font-mono font-black text-foreground/90 italic">{simVer}</span>
               </div>
               <div className="flex items-center justify-between p-4 px-6 group/row">
-                <span className="text-[10px] text-foreground/45 font-black uppercase tracking-[0.3em]">{t('settings.appBinary')}</span>
+                <span className="text-[10px] text-foreground/65 font-black uppercase tracking-[0.3em]">{t('settings.appBinary')}</span>
                 <span className="text-xs font-mono font-black text-foreground/90 italic">{localVer}</span>
               </div>
               <div className="flex items-center justify-between p-4 px-6 group/row">
-                <span className="text-[10px] text-foreground/45 font-black uppercase tracking-[0.3em]">{t('settings.networkAuth')}</span>
+                <span className="text-[10px] text-foreground/65 font-black uppercase tracking-[0.3em]">{t('settings.networkAuth')}</span>
                 <div className="flex items-center gap-2">
                    {hasUpdate && <div className="w-1 h-1 rounded-full bg-amber-500 animate-ping" />}
-                   <span className={`text-xs font-mono font-black ${hasUpdate ? 'text-amber-400' : 'text-foreground/40'}`}>{remoteVer}</span>
+                   <span className={`text-xs font-mono font-black ${hasUpdate ? 'text-amber-400' : 'text-foreground/60'}`}>{remoteVer}</span>
                 </div>
               </div>
             </div>
             
             <div className="pt-2">
-              <span className="text-[10px] font-black text-foreground/25 uppercase tracking-[0.3em] mb-4 block">{t('settings.integrityMatrix')}</span>
+              <span className="text-[10px] font-black text-foreground/50 uppercase tracking-[0.3em] mb-4 block">{t('settings.integrityMatrix')}</span>
               <div className="grid grid-cols-2 gap-3">
                  <div className={`flex flex-col gap-2 p-4 rounded-xl border transition-all duration-500 ${provisionStatus?.ls_core_exists ? 'bg-emerald-500/5 border-emerald-500/20 text-emerald-400' : 'bg-rose-500/10 border-rose-500/30 text-rose-500 animate-[pulse_2s_infinite]'}`}>
                     <div className="flex items-center justify-between">
@@ -445,7 +445,7 @@ const AssetsTab = ({ provisionStatus, versionInfo, isSyncing, onSync, local, set
                  className={`flex flex-col items-start gap-4 p-6 rounded-3xl border transition-all duration-500 group/btn relative overflow-hidden active:scale-[0.98] ${
                    btn.var === 'primary' ? 'bg-blue-600/5 border-blue-500/30 text-blue-400 hover:bg-blue-600/10 hover:border-blue-500/50 hover:shadow-[0_0_30px_rgba(37,99,235,0.15)]' :
                    btn.var === 'warning' ? 'bg-amber-600/5 border-amber-500/30 text-amber-500 hover:bg-amber-600/10 hover:border-amber-500/50 hover:shadow-[0_0_30px_rgba(245,158,11,0.15)]' :
-                   'bg-foreground/[0.02] border-glass-border text-foreground/45 hover:bg-foreground/[0.05] hover:border-foreground/20 hover:text-foreground/70'
+                   'bg-foreground/[0.02] border-glass-border text-foreground/65 hover:bg-foreground/[0.05] hover:border-foreground/40 hover:text-foreground/90'
                  }`}
                >
                  <div className="flex items-center justify-between w-full">
@@ -489,8 +489,8 @@ const IdeTab = ({ local, setLocal }) => {
             <div className="bg-background/40 border border-glass-border p-6 rounded-2xl space-y-3">
               <div className="flex justify-between items-center">
                 <div className="flex flex-col gap-0.5">
-                  <p className="text-sm font-black italic tracking-tight text-foreground/90">{t('settings.customPath')}</p>
-                  <p className="text-[9px] font-black text-foreground/35 uppercase tracking-widest leading-relaxed max-w-[280px]">{t('settings.customPathDesc')}</p>
+                   <p className="text-sm font-black italic tracking-tight text-foreground">{t('settings.customPath')}</p>
+                   <p className="text-[9px] font-black text-foreground/55 uppercase tracking-widest leading-relaxed max-w-[280px]">{t('settings.customPathDesc')}</p>
                 </div>
                 <div className="flex gap-2">
                    <button 
@@ -550,8 +550,8 @@ const IdeTab = ({ local, setLocal }) => {
 
             <div className="bg-background/40 border border-glass-border p-6 rounded-2xl space-y-3">
               <div className="flex flex-col gap-0.5">
-                <p className="text-sm font-black italic tracking-tight text-foreground/90">{t('settings.argsLabel')}</p>
-                <p className="text-[9px] font-black text-foreground/35 uppercase tracking-widest leading-relaxed">{t('settings.argsDesc')}</p>
+                 <p className="text-sm font-black italic tracking-tight text-foreground">{t('settings.argsLabel')}</p>
+                 <p className="text-[9px] font-black text-foreground/55 uppercase tracking-widest leading-relaxed">{t('settings.argsDesc')}</p>
               </div>
               <textarea
                 value={local.antigravity_args?.join(' ') || ''}
@@ -635,7 +635,7 @@ const Settings = () => {
              </div>
              <h1 className="text-xl font-black italic tracking-tighter uppercase">{t('settings.title')}</h1>
           </div>
-          <p className="text-[9px] font-black text-foreground/20 uppercase tracking-[0.4em] mt-1 pl-1">{t('settings.subtitle')}</p>
+           <p className="text-[9px] font-black text-foreground/45 uppercase tracking-[0.4em] mt-1 pl-1">{t('settings.subtitle')}</p>
         </div>
 
         <div className="flex bg-foreground/[0.03] border border-glass-border p-1 rounded-full overflow-hidden shadow-inner backdrop-blur-md">
@@ -686,10 +686,10 @@ const Settings = () => {
                  <div className="w-10 h-10 rounded-xl bg-blue-600/10 text-blue-500 flex items-center justify-center border border-blue-500/10">
                     <AlertTriangle className="w-5 h-5 animate-pulse" />
                  </div>
-                 <div>
-                    <p className="text-[11px] font-black uppercase tracking-[0.2em] text-foreground/90 italic">{t('settings.pendingSync')}</p>
-                    <p className="text-[8px] text-foreground/20 mt-0.5 font-bold uppercase tracking-widest">{t('settings.pendingSyncDesc')}</p>
-                 </div>
+                  <div>
+                     <p className="text-[11px] font-black uppercase tracking-[0.2em] text-foreground italic">{t('settings.pendingSync')}</p>
+                     <p className="text-[8px] text-foreground/45 mt-0.5 font-bold uppercase tracking-widest">{t('settings.pendingSyncDesc')}</p>
+                  </div>
               </div>
               <div className="h-8 w-px bg-glass-border mx-6"></div>
               <button

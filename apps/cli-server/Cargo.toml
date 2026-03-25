@@ -39,4 +39,8 @@ tower-http = { version = "0.6.8", features = ["trace", "cors", "fs"] }
 futures = "0.3"
 sysinfo.workspace = true
 dirs.workspace = true
-rfd = "0.15"
+rfd = { version = "0.15", optional = true }
+
+[features]
+default = ["gui"]
+gui = ["rfd"]

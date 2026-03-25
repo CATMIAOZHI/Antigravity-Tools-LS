@@ -4,10 +4,10 @@
 
 # 🚀 Antigravity Tools LS
 
-> **Professional Language Server Protocol Transcoding Bridge (v0.0.1)**
+> **Professional Language Server Protocol Transcoding Bridge (v0.0.2)**
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Version-0.0.1-blue?style=flat-square" alt="Version">
+  <img src="https://img.shields.io/badge/Version-0.0.2-blue?style=flat-square" alt="Version">
   <img src="https://img.shields.io/badge/Rust-1.74%2B-red?style=flat-square" alt="Rust">
   <img src="https://img.shields.io/badge/Tokio-Async-brightgreen?style=flat-square" alt="Tokio">
   <img src="https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey?style=flat-square" alt="License">
@@ -222,6 +222,12 @@ The Model Alias forwarding feature has not yet been achieved. An exact Model ID 
 ---
 
 ## 📝 Narrative Changelog
+
+### v0.0.2 - Containerization & Dependency Optimization (2026-03-25)
+- **[Docker] Runtime Self-Healing**: Resolved startup crashes in `debian:bookworm-slim` by adding minimal required libraries for `ls_core` (`libnss3`, `libgbm1`, etc.).
+- **[Core] Decoupled GUI Dependencies**: Refactored `rfd` (file dialog) as an optional feature. Docker builds now automatically exclude GTK/Wayland links, maintaining a minimal image size.
+- **[OAuth Fix] Port Auto-Sensing**: Fixed the hardcoded `3000` port in `AddAccountModal`. Authorization redirects now automatically match the real backend port (default `5173` or current origin).
+- **[API] Environment-Aware Fallback**: Optimized path selection APIs to return user-friendly errors in headless environments instead of crashing.
 
 ### v0.0.1 (Experimental) - Initial Core Features Release
 This version finalizes project initiation and infrastructure. Major functionalities include:

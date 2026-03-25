@@ -154,36 +154,48 @@ pub async fn detect_ide_api() -> impl IntoResponse {
 /// GET /v1/provision/select_path
 /// 打开本地文件选择对话框
 pub async fn select_path_api() -> impl IntoResponse {
-    // 使用 spawn_blocking 确保在 macOS 等平台上对话框正常弹出
-    let res = tokio::task::spawn_blocking(|| {
-        let dialog = rfd::FileDialog::new()
-            .set_title("选择 Antigravity 可执行文件");
-        
-        #[cfg(target_os = "macos")]
-        let dialog = dialog.add_filter("App", &["app"]);
-        #[cfg(target_os = "windows")]
-        let dialog = dialog.add_filter("Executable", &["exe"]);
-        
-        dialog.pick_file()
-    }).await;
+    #[cfg(feature = "gui")]
+    {
+        // 使用 spawn_blocking 确保在 macOS 等平台上对话框正常弹出
+        let res = tokio::task::spawn_blocking(|| {
+            let dialog = rfd::FileDialog::new()
+                .set_title("选择 Antigravity 可执行文件");
+            
+            #[cfg(target_os = "macos")]
+            let dialog = dialog.add_filter("App", &["app"]);
+            #[cfg(target_os = "windows")]
+            let dialog = dialog.add_filter("Executable", &["exe"]);
+            
+            dialog.pick_file()
+        }).await;
 
-    match res {
-        Ok(Some(path)) => {
-            Json(DetectIdeResponse {
-                success: true,
-                executable_path: Some(path.to_string_lossy().to_string()),
-                args: None,
-                message: "已选择文件".to_string(),
-            })
+        match res {
+            Ok(Some(path)) => {
+                Json(DetectIdeResponse {
+                    success: true,
+                    executable_path: Some(path.to_string_lossy().to_string()),
+                    args: None,
+                    message: "已选择文件".to_string(),
+                })
+            }
+            _ => {
+                Json(DetectIdeResponse {
+                    success: false,
+                    executable_path: None,
+                    args: None,
+                    message: "操作已取消".to_string(),
+                })
+            }
         }
-        _ => {
-            Json(DetectIdeResponse {
-                success: false,
-                executable_path: None,
-                args: None,
-                message: "操作已取消".to_string(),
-            })
-        }
+    }
+    #[cfg(not(feature = "gui"))]
+    {
+        Json(DetectIdeResponse {
+            success: false,
+            executable_path: None,
+            args: None,
+            message: "当前环境不支持 UI 选择目录，请在设置中手动输入路径".to_string(),
+        })
     }
 }
 

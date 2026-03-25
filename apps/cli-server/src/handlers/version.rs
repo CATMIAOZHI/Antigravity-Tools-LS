@@ -46,7 +46,7 @@ pub async fn get_version_info_api(
 /// GET /v1/version/check
 /// 检查 Dashboard 系统更新 (对接 Antigravity-Tools 仓库)
 pub async fn check_dashboard_updates_api() -> impl IntoResponse {
-    let current_version = "0.0.1"; // 当前 Dashboard 体验版基准
+    let current_version = "0.0.2"; // 当前 Dashboard 体验版基准
     let repo_url = "https://api.github.com/repos/lbjlaq/Antigravity-Tools-LS/releases/latest";
     
     let client = reqwest::Client::builder()

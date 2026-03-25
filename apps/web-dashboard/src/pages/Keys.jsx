@@ -67,16 +67,16 @@ const CreateKeyModal = ({ isOpen, onClose }) => {
               <ShieldCheck className="w-4 h-4" /> {t('keys.createSuccess')}
             </div>
             <div className="flex flex-col gap-2">
-              <span className="text-[10px] text-foreground/30 uppercase font-black tracking-widest pl-1">{t('common.name') || 'NAME'}: {newKey.name}</span>
+              <span className="text-[10px] text-foreground/55 uppercase font-black tracking-widest pl-1">{t('common.name') || 'NAME'}: {newKey.name}</span>
               <div className="flex items-center gap-3 bg-background/40 border border-glass-border rounded-xl p-4 group/key relative overflow-hidden">
                 <code className="text-emerald-400/90 font-mono text-xs break-all flex-1">{newKey.key}</code>
-                <button onClick={() => copyToClipboard(newKey.key)} className="p-2.5 bg-foreground/5 hover:bg-emerald-500/20 text-foreground/40 hover:text-emerald-400 rounded-lg transition-all border border-glass-border">
+                <button onClick={() => copyToClipboard(newKey.key)} className="p-2.5 bg-foreground/5 hover:bg-emerald-500/20 text-foreground/65 hover:text-emerald-400 rounded-lg transition-all border border-glass-border">
                   <Copy className="w-4 h-4" />
                 </button>
               </div>
             </div>
           </div>
-          <p className="text-[10px] text-foreground/20 italic leading-relaxed px-2">
+          <p className="text-[10px] text-foreground/45 italic leading-relaxed px-2">
             {t('keys.importantTip')}
           </p>
         </div>
@@ -94,7 +94,7 @@ const CreateKeyModal = ({ isOpen, onClose }) => {
     >
       <form onSubmit={handleSubmit} className="py-6 space-y-6">
         <div className="flex flex-col gap-2">
-          <label className="text-[10px] font-black text-foreground/20 uppercase tracking-[0.3em] pl-1">{t('keys.nameLabel')}</label>
+          <label className="text-[10px] font-black text-foreground/45 uppercase tracking-[0.3em] pl-1">{t('keys.nameLabel')}</label>
           <input 
             autoFocus
             type="text" 
@@ -159,7 +159,7 @@ const EditKeyModal = ({ isOpen, onClose, keyData }) => {
       <form onSubmit={handleSave} className="py-6 space-y-5">
 
         <div className="flex flex-col gap-2">
-          <label className="text-[10px] font-black text-foreground/20 uppercase tracking-[0.3em] pl-1 flex items-center gap-2">
+          <label className="text-[10px] font-black text-foreground/45 uppercase tracking-[0.3em] pl-1 flex items-center gap-2">
             <Pencil className="w-3 h-3" /> {t('keys.nameLabel')}
           </label>
           <input
@@ -171,7 +171,7 @@ const EditKeyModal = ({ isOpen, onClose, keyData }) => {
         </div>
 
         <div className="flex flex-col gap-2">
-          <label className="text-[10px] font-black text-foreground/20 uppercase tracking-[0.3em] pl-1 flex items-center gap-2">
+          <label className="text-[10px] font-black text-foreground/45 uppercase tracking-[0.3em] pl-1 flex items-center gap-2">
             <Key className="w-3 h-3" /> {t('keys.keyValueLabel')}
           </label>
           <div className="relative">
@@ -182,7 +182,7 @@ const EditKeyModal = ({ isOpen, onClose, keyData }) => {
               className="w-full bg-foreground/[0.03] border border-glass-border rounded-2xl px-5 py-3.5 text-sm text-foreground font-mono focus:outline-none focus:border-amber-500/50 transition-all"
             />
           </div>
-          <p className="text-[9px] text-foreground/20 italic pl-2">
+          <p className="text-[9px] text-foreground/45 italic pl-2">
             {t('keys.keyWarning')}
           </p>
         </div>
@@ -249,7 +249,7 @@ const KeyRow = ({ keyData }) => {
             <span className="text-[13px] md:text-sm font-black text-foreground/95 truncate italic tracking-tight">{keyData.name}</span>
             <button
               onClick={(e) => { e.stopPropagation(); setIsEditOpen(true); }}
-              className="opacity-0 group-hover:opacity-100 p-0.5 text-foreground/20 hover:text-amber-400 transition-all"
+              className="opacity-0 group-hover:opacity-100 p-0.5 text-foreground/45 hover:text-amber-400 transition-all"
               title={t('keys.edit')}
             >
               <Pencil className="w-3 h-3" />
@@ -262,7 +262,7 @@ const KeyRow = ({ keyData }) => {
       <div className="flex-1 flex px-6">
         <div onClick={copyToClipboard} className="bg-background/40 border border-glass-border rounded-lg px-3 py-1.5 flex items-center gap-3 group/masked relative overflow-hidden cursor-pointer">
           <code className="text-[11px] font-mono text-foreground/40 tracking-wider transition-colors group-hover/masked:text-blue-400 font-bold">{maskedKey}</code>
-          <button className="text-foreground/20 hover:text-foreground transition-colors">
+          <button className="text-foreground/45 hover:text-foreground transition-colors">
             {copied ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
           </button>
         </div>
@@ -285,7 +285,7 @@ const KeyRow = ({ keyData }) => {
         <button onClick={copyToClipboard} className="p-1.5 text-foreground/20 hover:text-blue-400 transition-all" title={t('common.copy')}>
           {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
         </button>
-        <button onClick={handleDelete} disabled={isDeleting} className="p-1.5 text-foreground/20 hover:text-rose-500 transition-all" title={t('keys.deleteTitle')}>
+        <button onClick={handleDelete} disabled={isDeleting} className="p-1.5 text-foreground/45 hover:text-rose-500 transition-all" title={t('keys.deleteTitle')}>
           <Trash2 className={`w-4 h-4 ${isDeleting ? 'animate-pulse' : ''}`} />
         </button>
       </div>
@@ -325,14 +325,14 @@ const Keys = () => {
       <div className="sticky top-0 z-[100] -mx-4 px-4 py-4 mb-8 bg-background/60 backdrop-blur-2xl border-b border-glass-border flex flex-col md:flex-row justify-between items-center gap-4 transition-all duration-300">
         <div className="flex items-center gap-6 px-4">
           <div className="flex flex-col">
-            <span className="text-[10px] font-black text-foreground/20 uppercase tracking-[0.3em]">{t('keys.credentials')}</span>
-            <span className="text-xl font-black italic tracking-tight">{keys.length} <span className="text-foreground/20 text-sm font-normal not-italic mx-1">/</span> {t('keys.keyMatrix')}</span>
+            <span className="text-[10px] font-black text-foreground/45 uppercase tracking-[0.3em]">{t('keys.credentials')}</span>
+            <span className="text-xl font-black italic tracking-tight">{keys.length} <span className="text-foreground/45 text-sm font-normal not-italic mx-1">/</span> {t('keys.keyMatrix')}</span>
           </div>
           
           <div className="h-8 w-px bg-foreground/10 hidden md:block"></div>
           
           <div className="relative group">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground/20 group-focus-within:text-blue-500 transition-colors" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground/45 group-focus-within:text-blue-500 transition-colors" />
             <input 
               type="text" 
               placeholder={t('keys.searchPlaceholder')} 
@@ -381,7 +381,7 @@ const Keys = () => {
                   <Key className="w-8 h-8 text-foreground/5" />
                 </div>
                 <div className="text-center">
-                  <div className="text-[11px] font-black uppercase tracking-[0.4em] text-foreground/20 mb-1">{t('keys.empty')}</div>
+                  <div className="text-[11px] font-black uppercase tracking-[0.4em] text-foreground/45 mb-1">{t('keys.empty')}</div>
                   <div className="text-[9px] font-bold text-foreground/10 uppercase italic">{t('keys.noKeys')}</div>
                 </div>
               </div>

@@ -1,7 +1,7 @@
 {
     "app": {
         "title": "Antigravity Tools LS",
-        "subtitle": "Antigravity Tools LS v0.0.1 (试验版)",
+        "subtitle": "Antigravity Tools LS v0.0.2 (试验版)",
         "statusReady": "服务核心已就绪",
         "sourceCode": "源码仓"
     },
@@ -25,7 +25,7 @@
         "headers": "鉴权头 (Headers)",
         "payload": "请求体 (Payload)",
         "securityTitle": "全链路反代策略",
-        "securityDesc": "基于 0.0.1 试验版兼容协议。所有请求经由池化账号流转，支持 Metadata 强制注入与 UA 防封伪装。"
+        "securityDesc": "基于 0.0.2 试验版兼容协议。所有请求经由池化账号流转，支持 Metadata 强制注入与 UA 防封伪装。"
     },
     "accounts": {
         "title": "Google 账号管理",
@@ -131,7 +131,7 @@
     },
     "settings": {
         "title": "全局参数设置",
-        "subtitle": "核心引擎 v0.0.1",
+        "subtitle": "核心引擎 v0.0.2",
         "appearance": "外观偏好",
         "quotaStatus": "额度同步",
         "logs": "日志策略",

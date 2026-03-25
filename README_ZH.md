@@ -4,10 +4,10 @@
 
 # 🚀 Antigravity Tools LS
 
-> **专业级 Language Server 协议转码桥接器 (v0.0.1)**
+> **专业级 Language Server 协议转码桥接器 (v0.0.2)**
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Version-0.0.1-blue?style=flat-square" alt="Version">
+  <img src="https://img.shields.io/badge/Version-0.0.2-blue?style=flat-square" alt="Version">
   <img src="https://img.shields.io/badge/Rust-1.74%2B-red?style=flat-square" alt="Rust">
   <img src="https://img.shields.io/badge/Tokio-Async-brightgreen?style=flat-square" alt="Tokio">
   <img src="https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey?style=flat-square" alt="License">
@@ -222,6 +222,12 @@ docker run -d \
 ---
 
 ## 📝 变更日志 (Narrative Changelog)
+
+### v0.0.2 - 容器化生产力与依赖优化 (2026-03-25)
+- **[Docker] 启动环境自愈**：攻克了 `debian:bookworm-slim` 镜像缺失极简 GUI 库导致的启动崩溃问题，补齐了 `ls_core` 运行所需的最小依赖集（`libnss3`, `libgbm1` 等）。
+- **[核心解耦] GUI 依赖按需加载**：将 `rfd` (文件选择框) 迁移为可选依赖项并增加 `gui` feature 门控，Docker 构建时自动剔除 GTK/Wayland 强链接，保持镜像极度精简。
+- **[OAuth 修复] 授权端口自动感知**：修正了前端 `AddAccountModal` 中硬编码的 `3000` 端口，现在授权跳转能自动识别并匹配真实的后端端口（默认 `5173` 或当前自定义 Origin）。
+- **[优雅降级] 环境感知 API**：优化了路径选择接口，在无 GUI 的服务器环境下会自动返回友好的错误指引而非进程崩溃。
 
 ### v0.0.1 (Experimental) - 首发核心特性落成
 本版本完成项目立项与基础框架搭建，主要功能包括：

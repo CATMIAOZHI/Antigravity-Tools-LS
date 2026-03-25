@@ -88,7 +88,7 @@ const Dashboard = () => {
 
       {/* Matrix Footer Status */}
       <div className="flex justify-center mt-8">
-        <div className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-text-dim border border-glass-border text-[9px] font-mono text-foreground/40 uppercase tracking-widest shadow-inner transition-colors duration-300">
+        <div className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-text-dim border border-glass-border text-[9px] font-mono text-foreground/65 uppercase tracking-widest shadow-inner transition-colors duration-300">
            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500/40 animate-pulse" />
            {metrics?.timestamp ? t('dashboard.matrixSynced', { time: new Date(metrics.timestamp * 1000).toLocaleTimeString() }) : t('dashboard.establishing')}
         </div>

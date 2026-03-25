@@ -96,22 +96,22 @@ jobs:
           
           # 1. macOS 处理 (DMG + Updater Tarball)
           # 尝试多个可能的 Tauri v2 路径 (适配 universal 与单架构)
-          find target -name "*.dmg" -exec cp {} artifacts-out/Antigravity.Tools_${VER_CLEAN}_${ARCH}.dmg \; 2>/dev/null || true
-          find target -name "*.app.tar.gz" -exec cp {} artifacts-out/Antigravity.Tools_${ARCH}.app.tar.gz \; 2>/dev/null || true
-          find target -name "*.app.tar.gz.sig" -exec cp {} artifacts-out/Antigravity.Tools_${ARCH}.app.tar.gz.sig \; 2>/dev/null || true
+          find target -name "*.dmg" -exec cp {} artifacts-out/Antigravity-Tools-LS_${VER_CLEAN}_${ARCH}.dmg \; 2>/dev/null || true
+          find target -name "*.app.tar.gz" -exec cp {} artifacts-out/Antigravity-Tools-LS_${ARCH}.app.tar.gz \; 2>/dev/null || true
+          find target -name "*.app.tar.gz.sig" -exec cp {} artifacts-out/Antigravity-Tools-LS_${ARCH}.app.tar.gz.sig \; 2>/dev/null || true
           
           # 2. Windows 处理 (NSIS Setup + Portable EXE)
           if [[ "${{ matrix.platform }}" == *"windows"* ]]; then
             # NSIS 安装包
-            find target -name "*setup.exe" -exec cp {} artifacts-out/Antigravity.Tools_${VER_CLEAN}_x64-setup.exe \; 2>/dev/null || true
+            find target -name "*setup.exe" -exec cp {} artifacts-out/Antigravity-Tools-LS_${VER_CLEAN}_x64-setup.exe \; 2>/dev/null || true
             # Portable 单文件 (直接拷贝编译出的二进制)
-            cp target/release/antigravity_tools_ls.exe artifacts-out/Antigravity.Tools_${VER_CLEAN}_x64_portable.exe 2>/dev/null || true
+            cp target/release/antigravity_tools_ls.exe artifacts-out/Antigravity-Tools-LS_${VER_CLEAN}_x64_portable.exe 2>/dev/null || true
           fi
           
           # 3. Linux 处理 (AppImage + Signatures)
           if [[ "${{ matrix.platform }}" == *"ubuntu"* ]]; then
-            find target -name "*.AppImage" -exec cp {} artifacts-out/Antigravity.Tools_${VER_CLEAN}_${ARCH}.AppImage \; 2>/dev/null || true
-            find target -name "*.AppImage.sig" -exec cp {} artifacts-out/Antigravity.Tools_${VER_CLEAN}_${ARCH}.AppImage.sig \; 2>/dev/null || true
+            find target -name "*.AppImage" -exec cp {} artifacts-out/Antigravity-Tools-LS_${VER_CLEAN}_${ARCH}.AppImage \; 2>/dev/null || true
+            find target -name "*.AppImage.sig" -exec cp {} artifacts-out/Antigravity-Tools-LS_${VER_CLEAN}_${ARCH}.AppImage.sig \; 2>/dev/null || true
           fi
           
           echo "Contents of artifacts-out:"
@@ -222,8 +222,8 @@ jobs:
             --arg win_nsis_sig "$WINDOWS_NSIS_SIG" \
             --arg linux_amd64_sig "$LINUX_AMD64_SIG" \
             --arg linux_a64_sig "$LINUX_AARCH64_SIG" \
-            --arg mac_a64_url "$([ -n "$MACOS_AARCH64_SIG" ] && echo "Antigravity.Tools_aarch64.app.tar.gz" || echo "Antigravity.Tools_universal.app.tar.gz")" \
-            --arg mac_x64_url "$([ -n "$MACOS_X64_SIG" ] && echo "Antigravity.Tools_x64.app.tar.gz" || echo "Antigravity.Tools_universal.app.tar.gz")" \
+            --arg mac_a64_url "$([ -n "$MACOS_AARCH64_SIG" ] && echo "Antigravity-Tools-LS_aarch64.app.tar.gz" || echo "Antigravity-Tools-LS_universal.app.tar.gz")" \
+            --arg mac_x64_url "$([ -n "$MACOS_X64_SIG" ] && echo "Antigravity-Tools-LS_x64.app.tar.gz" || echo "Antigravity-Tools-LS_universal.app.tar.gz")" \
             --arg ver "$VER" \
             '{
               version: $version,
@@ -239,15 +239,15 @@ jobs:
                   signature: $mac_x64_sig
                 },
                 "windows-x86_64": {
-                  url: "\($dl)/Antigravity.Tools_\($ver)_x64-setup.exe",
+                  url: "\($dl)/Antigravity-Tools-LS_\($ver)_x64-setup.exe",
                   signature: $win_nsis_sig
                 },
                 "linux-x86_64": {
-                  url: "\($dl)/Antigravity.Tools_\($ver)_amd64.AppImage",
+                  url: "\($dl)/Antigravity-Tools-LS_\($ver)_amd64.AppImage",
                   signature: $linux_amd64_sig
                 },
                 "linux-aarch64": {
-                  url: "\($dl)/Antigravity.Tools_\($ver)_aarch64.AppImage",
+                  url: "\($dl)/Antigravity-Tools-LS_\($ver)_aarch64.AppImage",
                   signature: $linux_a64_sig
                 }
               }
@@ -262,7 +262,7 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         with:
           allowUpdates: true
-          name: "Antigravity Tools ${{ github.ref_name }}"
+          name: "Antigravity Tools LS ${{ github.ref_name }}"
           bodyFile: "release_notes.md"
           token: ${{ secrets.GITHUB_TOKEN }}
           artifacts: "all-artifacts/**/*,updater.json"

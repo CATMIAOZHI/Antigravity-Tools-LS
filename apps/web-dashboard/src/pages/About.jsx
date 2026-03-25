@@ -52,7 +52,7 @@ const About = () => {
     { label: t('about.envStack'), value: "React 19 / Vite / Tailwind", icon: Box },
     { 
       label: t('about_extra.dashboardVersion'), 
-      value: `v0.0.1 (${t('about_extra.experimental')})`, 
+      value: `v0.0.2 (${t('about_extra.experimental')})`, 
       icon: ShieldCheck,
       isVersionRow: true 
     },
@@ -75,25 +75,25 @@ const About = () => {
         </div>
         <div className="text-center relative z-10">
           <h1 className="text-3xl font-black tracking-tighter uppercase mb-1 text-foreground">Antigravity Tools LS</h1>
-          <p className="text-[10px] text-foreground/30 tracking-[0.3em] font-mono leading-none lowercase italic opacity-80">{t('app.subtitle')}</p>
+          <p className="text-[10px] text-foreground/55 tracking-[0.3em] font-mono leading-none lowercase italic opacity-80">{t('app.subtitle')}</p>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 max-w-6xl mx-auto items-stretch">
         {/* 左侧：系统清单 (Manifest) */}
         <div className="lg:col-span-3 flex flex-col">
-           <h2 className="text-[10px] font-bold text-foreground/20 uppercase tracking-[0.2em] px-2 mb-4">{t('about.manifest')}</h2>
+           <h2 className="text-[10px] font-bold text-foreground/45 uppercase tracking-[0.2em] px-2 mb-4">{t('about.manifest')}</h2>
            <div className="glass-card spotlight-card p-6 rounded-2xl border border-glass-border relative overflow-hidden group flex-1 flex flex-col transition-all duration-300">
               <div className="grain-overlay" />
               <div className="flex-1 space-y-2">
                 {manifestData.map((item, i) => (
                   <div key={i} className="flex items-center justify-between p-4 rounded-xl bg-foreground/[0.02] border border-glass-border hover:bg-foreground/[0.04] transition-colors group/node">
                     <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 rounded-lg bg-foreground/5 flex items-center justify-center text-foreground/30 group-hover:text-blue-500 transition-colors">
+                      <div className="w-10 h-10 rounded-lg bg-foreground/5 flex items-center justify-center text-foreground/55 group-hover:text-blue-500 transition-colors">
                         <item.icon size={18} />
                       </div>
                       <div>
-                         <p className="text-[10px] text-foreground/30 font-bold uppercase tracking-wider">{item.label}</p>
+                         <p className="text-[10px] text-foreground/55 font-bold uppercase tracking-wider">{item.label}</p>
                          <div className="flex items-center gap-2">
                             <p className="text-sm font-mono text-foreground/80">{item.value}</p>
                             {item.isVersionRow && updateInfo?.has_update && (
@@ -113,7 +113,7 @@ const About = () => {
                 <div className={`mt-4 p-3 rounded-xl border flex items-center gap-3 animate-in slide-in-from-top-2 duration-300 ${
                   updateInfo.has_update 
                     ? 'bg-blue-500/5 border-blue-500/20 text-blue-400' 
-                    : 'bg-foreground/[0.01] border-glass-border text-foreground/20'
+                    : 'bg-foreground/[0.01] border-glass-border text-foreground/45'
                 }`}>
                   {updateInfo.has_update ? <AlertCircle size={14} /> : <CheckCircle2 size={14} />}
                   <span className="text-[10px] font-bold uppercase tracking-widest flex-1">
@@ -136,7 +136,7 @@ const About = () => {
            <button 
              onClick={handleCheckUpdate}
              disabled={isCheckingUpdate}
-             className="mt-8 w-full py-4 rounded-xl border border-glass-border hover:bg-foreground/5 text-foreground/60 hover:text-foreground font-black text-sm uppercase tracking-widest flex items-center justify-center gap-2 active:scale-[0.98] transition-all group/btn box-border"
+             className="mt-8 w-full py-4 rounded-xl border border-glass-border hover:bg-foreground/5 text-foreground/85 hover:text-foreground font-black text-sm uppercase tracking-widest flex items-center justify-center gap-2 active:scale-[0.98] transition-all group/btn box-border"
            >
              <RefreshCw size={16} className={`${isCheckingUpdate ? 'animate-spin text-blue-500' : 'group-hover-btn:text-blue-500 transition-colors'}`} />
              {isCheckingUpdate ? t('about_extra.verifying') : t('about_extra.checkUpdate')}
@@ -145,12 +145,12 @@ const About = () => {
 
         {/* 右侧：作者签名 (Signature) */}
         <div className="lg:col-span-2 flex flex-col">
-           <h2 className="text-[10px] font-bold text-foreground/20 uppercase tracking-[0.2em] px-2 mb-4">{t('about.signature')}</h2>
+           <h2 className="text-[10px] font-bold text-foreground/45 uppercase tracking-[0.2em] px-2 mb-4">{t('about.signature')}</h2>
            <div className="glass-card spotlight-card p-6 rounded-2xl border border-glass-border relative overflow-hidden group flex-1 flex flex-col transition-all duration-300">
               <div className="grain-overlay" />
               {/* Profile */}
               <div className="flex items-center gap-4 mb-8">
-                 <div className="w-14 h-14 rounded-2xl bg-foreground/5 border border-glass-border flex items-center justify-center text-foreground/40 group-hover:border-blue-500/50 transition-all duration-500 overflow-hidden relative">
+                 <div className="w-14 h-14 rounded-2xl bg-foreground/5 border border-glass-border flex items-center justify-center text-foreground/65 group-hover:border-blue-500/50 transition-all duration-500 overflow-hidden relative">
                     <User size={32} />
                     <div className="absolute inset-0 bg-blue-600/10 opacity-0 group-hover:opacity-100 transition-opacity" />
                  </div>
@@ -178,10 +178,10 @@ const About = () => {
                      >
                         <div className="flex items-center gap-3">
                            <node.icon size={16} className={node.color} />
-                           <span className="text-xs font-bold text-foreground/60">{node.name}</span>
+                           <span className="text-xs font-bold text-foreground/85">{node.name}</span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <span className="text-[10px] font-mono text-foreground/30 group-hover/node:text-foreground/60 transition-colors uppercase">{node.value}</span>
+                          <span className="text-[10px] font-mono text-foreground/55 group-hover/node:text-foreground/85 transition-colors uppercase">{node.value}</span>
                           {node.url && <ExternalLink size={10} className="text-foreground/10 group-hover/node:text-blue-500 transition-colors" />}
                         </div>
                      </Container>
@@ -202,7 +202,7 @@ const About = () => {
       </div>
 
       <div className="text-center py-8">
-         <p className="text-[10px] text-foreground/10 tracking-[0.5em] font-mono">COPYRIGHT © 2025-2026 ANTIGRAVITY. ALL RIGHTS RESERVED.</p>
+         <p className="text-[10px] text-foreground/35 tracking-[0.5em] font-mono">COPYRIGHT © 2025-2026 ANTIGRAVITY. ALL RIGHTS RESERVED.</p>
       </div>
 
       {/* Support Modal */}
@@ -218,11 +218,11 @@ const About = () => {
                     </div>
                     <div>
                       <h3 className="text-2xl font-black text-foreground">{t('about.donatedTitle')}</h3>
-                      <p className="text-sm text-foreground/40">{t('about.donatedDesc')}</p>
+                       <p className="text-sm text-foreground/65">{t('about.donatedDesc')}</p>
                     </div>
                   </div>
                   <button onClick={() => setIsSupportModalOpen(false)} className="p-2 hover:bg-foreground/5 rounded-full transition-colors">
-                    <X size={20} className="text-foreground/40" />
+                    <X size={20} className="text-foreground/65" />
                   </button>
                </div>
 
@@ -242,7 +242,7 @@ const About = () => {
                             onError={(e) => { e.target.style.display = 'none'; e.target.parentNode.innerHTML = '<div class="absolute inset-0 flex items-center justify-center text-[10px] text-black font-mono">QR_DATA_MISSING</div>'; }}
                           />
                        </div>
-                       <span className="text-[10px] font-bold text-foreground/40 uppercase tracking-widest group-hover:text-blue-500 transition-colors">{qr.name}</span>
+                        <span className="text-[10px] font-bold text-foreground/65 uppercase tracking-widest group-hover:text-blue-500 transition-colors">{qr.name}</span>
                     </div>
                   ))}
                </div>

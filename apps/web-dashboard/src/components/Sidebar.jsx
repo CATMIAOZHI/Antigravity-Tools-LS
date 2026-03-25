@@ -55,7 +55,7 @@ const Sidebar = () => {
             title={sidebarCollapsed ? item.name : ''}
             className={({ isActive }) => `
               flex items-center ${sidebarCollapsed ? 'justify-center px-0' : 'gap-3 px-3'} py-3.5 rounded-xl text-[13px] font-bold transition-all relative group/nav
-              ${isActive ? 'sidebar-item-active text-blue-400' : 'sidebar-item-inactive text-foreground/40 hover:text-foreground/80'}
+              ${isActive ? 'sidebar-item-active text-blue-400' : 'sidebar-item-inactive text-foreground/65 hover:text-foreground/85'}
             `}
           >
             <item.icon className={`w-5 h-5 shrink-0 ${sidebarCollapsed ? 'group-hover/nav:scale-110 transition-transform' : ''}`} />

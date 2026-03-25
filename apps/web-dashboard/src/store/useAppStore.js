@@ -21,7 +21,7 @@ const useAppStore = create((set) => ({
   systemStatus: {
     integrity: 'INITIALIZING',
     latency: '...',
-    version: 'v0.0.1',
+    version: 'v0.0.2',
   },
 
   syncProgress: {

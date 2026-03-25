@@ -22,12 +22,12 @@
     --text: #ffffff;
     --sidebar-bg: #000000;
     --glass-bg: rgba(255, 255, 255, 0.03);
-    --glass-border: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.1); /* 增强边框从 0.05 到 0.1 */
     --accent: #3b82f6;
-    --text-muted: rgba(255, 255, 255, 0.4);
-    --text-dim: rgba(255, 255, 255, 0.1);
-    --text-faint: rgba(255, 255, 255, 0.05);
-    --card-bg: rgba(255, 255, 255, 0.02);
+    --text-muted: rgba(255, 255, 255, 0.65); /* 提高对比度从 0.4 到 0.65 */
+    --text-dim: rgba(255, 255, 255, 0.25); /* 提高对比度从 0.1 到 0.25 */
+    --text-faint: rgba(255, 255, 255, 0.1); /* 提高对比度从 0.05 到 0.1 */
+    --card-bg: rgba(255, 255, 255, 0.04); /* 微调 0.02 到 0.04 */
     --btn-bg: #ffffff;
     --btn-text: #000000;
     --highlight: #ffffff;
@@ -39,11 +39,11 @@
     --text: #1e293b;
     --sidebar-bg: #ffffff;
     --glass-bg: rgba(255, 255, 255, 0.45);
-    --glass-border: rgba(0, 0, 0, 0.05);
+    --glass-border: rgba(0, 0, 0, 0.08); /* 增强 0.05 到 0.08 */
     --accent: #2563eb;
-    --text-muted: #64748b;
-    --text-dim: rgba(30, 41, 59, 0.1);
-    --text-faint: rgba(30, 41, 59, 0.04);
+    --text-muted: #475569; /* 加深 Slate 500 到 600 */
+    --text-dim: rgba(30, 41, 59, 0.18); /* 增强权重 0.1 到 0.18 */
+    --text-faint: rgba(30, 41, 59, 0.08); /* 增强权重 0.04 到 0.08 */
     --card-bg: rgba(255, 255, 255, 0.7);
     --btn-bg: #1e293b;
     --btn-text: #ffffff;
