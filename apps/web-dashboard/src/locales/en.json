@@ -254,6 +254,7 @@
         "memoryMatrix": "Memory Matrix",
         "runtimeHeartbeat": "Runtime Heartbeat",
         "throughputIndex": "Throughput Index",
+        "checking": "CHECKING",
         "optimal": "OPTIMAL",
         "degraded": "DEGRADED",
         "systemCoreReady": "SYSTEM CORE READY",

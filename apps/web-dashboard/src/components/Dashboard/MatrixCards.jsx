@@ -12,6 +12,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { getIntegrityStatus } from './integrityStatus';
 
 function cn(...inputs) {
   return twMerge(clsx(inputs));
@@ -49,26 +50,46 @@ export const DashboardCard = ({ children, title, icon: Icon, className, height =
 export const LSIntegrityCard = ({ metrics, provision }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const isHealthy = provision?.ls_core_exists && provision?.cert_pem_exists;
+  const { state, isHealthy } = getIntegrityStatus(provision);
+  const isChecking = state === 'CHECKING';
+  const cardStatusText = isChecking
+    ? t('dashboard.checking')
+    : isHealthy
+      ? t('dashboard.optimal')
+      : t('dashboard.degraded');
   
   return (
     <DashboardCard 
       title={t('dashboard.lsCoreIntegrity')} 
       icon={ShieldCheck}
-      onClick={!isHealthy ? () => navigate('/settings', { state: { tab: 'assets' } }) : undefined}
-      className={!isHealthy ? "border-amber-500/20 hover:border-amber-500/50" : ""}
+      onClick={state === 'DEGRADED' ? () => navigate('/settings', { state: { tab: 'assets' } }) : undefined}
+      className={state === 'DEGRADED' ? "border-amber-500/20 hover:border-amber-500/50" : ""}
     >
       <div className="flex items-baseline gap-2">
-        <span className={isHealthy ? "text-emerald-500 font-black text-3xl tracking-tighter" : "text-amber-500 font-black text-3xl tracking-tighter animate-pulse"}>
-          {isHealthy ? t('dashboard.optimal') : t('dashboard.degraded')}
+        <span className={cn(
+          "font-black text-3xl tracking-tighter",
+          isChecking
+            ? "text-blue-400"
+            : isHealthy
+              ? "text-emerald-500"
+              : "text-amber-500 animate-pulse"
+        )}>
+          {cardStatusText}
         </span>
       </div>
       <div className="mt-2 space-y-1">
         <div className="flex items-center gap-2 text-[10px] text-foreground/40">
-           <div className={cn("w-1.5 h-1.5 rounded-full", isHealthy ? "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" : "bg-amber-500 shadow-[0_0_10px_rgba(245,158,11,0.5)]")} />
-           {t('dashboard.systemCoreReady')}
+           <div className={cn(
+             "w-1.5 h-1.5 rounded-full",
+             isChecking
+               ? "bg-blue-400 shadow-[0_0_8px_rgba(96,165,250,0.45)]"
+               : isHealthy
+                 ? "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"
+                 : "bg-amber-500 shadow-[0_0_10px_rgba(245,158,11,0.5)]"
+           )} />
+           {isChecking ? t('dashboard.establishing') : t('dashboard.systemCoreReady')}
         </div>
-        {!isHealthy && (
+        {state === 'DEGRADED' && (
           <div className="text-[9px] text-amber-500/60 font-black uppercase tracking-widest mt-1">
              {t('settings.fixNow')} →
           </div>

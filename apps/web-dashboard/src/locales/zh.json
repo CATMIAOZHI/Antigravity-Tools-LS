@@ -250,6 +250,7 @@
         "memoryMatrix": "内存资源矩阵",
         "runtimeHeartbeat": "运行时心跳监控",
         "throughputIndex": "系统吞吐索引",
+        "checking": "检查中 (CHECKING)",
         "optimal": "极佳 (OPTIMAL)",
         "degraded": "受损 (DEGRADED)",
         "systemCoreReady": "系统核心就绪",
