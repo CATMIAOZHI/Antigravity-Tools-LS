@@ -72,6 +72,7 @@ pub async fn route_and_resolve(
 async fn handle_protocol_generic<M: ProtocolMapper>(
     state: &Arc<AppState>,
     auth: AuthContext,
+    headers: HeaderMap,
     slot_id: Option<String>,
     payload: M::Request,
 ) -> Response {
@@ -110,6 +111,14 @@ async fn handle_protocol_generic<M: ProtocolMapper>(
 
     let tls_cert = state.tls_cert.read().await.clone().unwrap_or_default();
 
+    // 🚀 从请求 Header 提取工作区目录（Claude Code 通过 x-cwd 传入）
+    let workspace_dir = headers.get("x-cwd")
+        .and_then(|v| v.to_str().ok())
+        .map(|s| s.to_string());
+    if let Some(ref wd) = workspace_dir {
+        tracing::info!("📁 [Chat] 从请求提取工作区目录: {}", wd);
+    }
+
     let conn_info = transcoder_core::transcoder::LsConnectionInfo {
         grpc_addr: instance.grpc_addr().to_string(),
         csrf_token: instance.csrf_token(),
@@ -118,6 +127,7 @@ async fn handle_protocol_generic<M: ProtocolMapper>(
         resolved_model_id,
         account_email: Some(email.clone()),
         error_fetcher: Some(instance.clone()),
+        workspace_dir,
     };
 
     let (meta_tx, meta_rx) = tokio::sync::oneshot::channel();
@@ -213,7 +223,7 @@ pub async fn chat_completions(
     Json(payload): Json<transcoder_core::transcoder::OpenAIChatRequest>,
 ) -> Response {
     let slot_id = extract_slot_id(&headers);
-    handle_protocol_generic::<OpenAiMapper>(&state, auth, slot_id, payload).await
+    handle_protocol_generic::<OpenAiMapper>(&state, auth, headers, slot_id, payload).await
 }
 
 pub async fn openai_responses_api(
@@ -223,7 +233,7 @@ pub async fn openai_responses_api(
     Json(payload): Json<transcoder_core::transcoder::OpenAIChatRequest>,
 ) -> Response {
     let slot_id = extract_slot_id(&headers);
-    handle_protocol_generic::<OpenAiMapper>(&state, auth, slot_id, payload).await
+    handle_protocol_generic::<OpenAiMapper>(&state, auth, headers, slot_id, payload).await
 }
 
 pub async fn anthropic_messages(
@@ -238,7 +248,7 @@ pub async fn anthropic_messages(
     
     // 如果是流式请求，直接走泛型流程
     if is_stream {
-        return handle_protocol_generic::<AnthropicMapper>(&state, auth, slot_id, payload).await;
+        return handle_protocol_generic::<AnthropicMapper>(&state, auth, headers, slot_id, payload).await;
     }
 
     let start_time = std::time::Instant::now();
@@ -280,6 +290,7 @@ pub async fn anthropic_messages(
         resolved_model_id,
         account_email: Some(email.clone()),
         error_fetcher: Some(instance.clone()),
+        workspace_dir: headers.get("x-cwd").and_then(|v| v.to_str().ok()).map(|s| s.to_string()),
     };
 
     let (meta_tx, meta_rx) = tokio::sync::oneshot::channel();
@@ -390,10 +401,27 @@ pub async fn anthropic_messages(
 pub async fn gemini_generate_content(
     State(state): State<Arc<AppState>>,
     auth: AuthContext,
-    Path(_model): Path<String>,
+    Path(model): Path<String>,
     headers: HeaderMap,
-    Json(payload): Json<transcoder_core::transcoder::GeminiContentRequest>,
+    Json(mut payload): Json<transcoder_core::transcoder::GeminiContentRequest>,
 ) -> Response {
+    // Gemini 原生 SDK 会将调用方法拼到路径上，例如
+    // gemini-3-flash-agent:streamGenerateContent，需要先还原真实模型名。
+    let normalized_model = model.split(':').next().unwrap_or(&model).to_string();
+    payload.model = Some(normalized_model);
     let slot_id = extract_slot_id(&headers);
-    handle_protocol_generic::<GeminiMapper>(&state, auth, slot_id, payload).await
+    handle_protocol_generic::<GeminiMapper>(&state, auth, headers, slot_id, payload).await
+}
+
+/// POST /v1/messages/count_tokens
+/// Claude CLI (v2.1.83+) 在发送正式请求前会调用此端点进行 token 预估。
+/// 未注册此路由时会返回 405，导致 Claude CLI 无法工作。
+/// 此处返回模拟数据（0 tokens），Claude CLI 收到合法响应后可继续正常工作。
+pub async fn anthropic_count_tokens(
+    _auth: AuthContext,
+    Json(_payload): Json<serde_json::Value>,
+) -> Response {
+    Json(serde_json::json!({
+        "input_tokens": 0
+    })).into_response()
 }

@@ -504,6 +504,15 @@ pub struct OpenAiModel {
     pub owned_by: String,
 }
 
+const DOCUMENTED_MODEL_IDS: &[&str] = &[
+    "gemini-3.1-pro-high",
+    "gemini-3.1-pro-low",
+    "gemini-3-flash-agent",
+    "claude-sonnet-4-6",
+    "claude-opus-4-6-thinking",
+    "gpt-oss-120b-medium",
+];
+
 pub async fn models_api(
     State(state): State<Arc<AppState>>,
 ) -> impl IntoResponse {
@@ -518,11 +527,17 @@ pub async fn models_api(
         if let Ok(Some(account)) = state.account_manager.get_account(&summary.id).await {
             if let Some(quota) = account.quota {
                 for m in quota.models {
-                    if m.percentage > 0 {
+                    if !m.name.trim().is_empty() {
                         model_names.insert(m.name);
                     }
                 }
             }
+        }
+    }
+
+    if model_names.is_empty() {
+        for model_id in DOCUMENTED_MODEL_IDS {
+            model_names.insert((*model_id).to_string());
         }
     }
 

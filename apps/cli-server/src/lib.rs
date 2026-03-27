@@ -26,7 +26,7 @@ use transcoder_core::transcoder::ProvisioningStrategy;
 use handlers::{
     health_check,
     auth::{auth_login, oauth_callback, refresh_token_api, add_account_by_callback_url_api, add_account_by_callback_url_query_api, manual_import_account_api, manual_import_account_query_api},
-    chat::{chat_completions, anthropic_messages, gemini_generate_content, openai_responses_api},
+    chat::{chat_completions, anthropic_messages, anthropic_count_tokens, gemini_generate_content, openai_responses_api},
     probes,
     logs::fetch_memory_logs_api,
     keys::{list_keys_api, create_key_api, delete_key_api, rename_key_api},
@@ -229,6 +229,7 @@ pub async fn run_server(port: Option<u16>) -> anyhow::Result<()> {
         .route("/v1/models", get(probes::models_api))
         .route("/v1/responses", post(openai_responses_api))
         .route("/v1/messages", post(anthropic_messages))
+        .route("/v1/messages/count_tokens", post(anthropic_count_tokens))
         .route("/v1beta/models/:model", post(gemini_generate_content))
         .route("/v1/instances", get(handlers::instances::list_instances))
         .route("/v1/instances/:id", get(handlers::instances::get_instance).delete(handlers::instances::remove_instance))

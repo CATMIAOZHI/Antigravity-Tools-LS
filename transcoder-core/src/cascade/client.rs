@@ -2,7 +2,6 @@ use tonic::{transport::{Channel, Endpoint, ClientTlsConfig, Certificate}, Reques
 use crate::proto::exa::language_server_pb::{
     language_server_service_client::LanguageServerServiceClient,
     StartCascadeRequest, SendUserCascadeMessageRequest, GetCascadeTrajectoryRequest,
-    AddTrackedWorkspaceRequest, SetWorkingDirectoriesRequest,
 };
 use crate::proto::exa::cortex_pb::{CortexTrajectoryType, CascadeRunStatus, CortexStepType, CortexStepStatus};
 use crate::proto::exa::codeium_common_pb::{Metadata, TextOrScopeItem};
@@ -85,6 +84,7 @@ impl CascadeClient {
         metadata: Metadata,
         csrf_token: String,
         tls_cert: Vec<u8>,
+        workspace_dir: Option<String>,
     ) -> anyhow::Result<Self> {
         let addr = if grpc_addr.starts_with("http") { grpc_addr } else { format!("https://{}", grpc_addr) };
         
@@ -102,34 +102,45 @@ impl CascadeClient {
             
         let mut client = LanguageServerServiceClient::new(channel);
 
-        // Set up a workspace so the Cascade agent has valid context
-        let ws_path = "/tmp/antigravity_workspace";
-        let _ = std::fs::create_dir_all(ws_path);
+        // 🚀 如果有工作区目录，向 LS 引擎注册工作区
+        // 注意两个 gRPC 方法对路径格式的要求不同：
+        //   AddTrackedWorkspace 要求裸绝对路径（如 /Users/xxx/cse3）
+        //   SetWorkingDirectories 要求 file:// URI 格式（如 file:///Users/xxx/cse3）
+        if let Some(ref dir) = workspace_dir {
+            if !dir.is_empty() {
+                let bare_path = dir.trim_start_matches("file://").to_string();
+                let uri = if bare_path.starts_with('/') {
+                    format!("file://{}", bare_path)
+                } else {
+                    format!("file:///{}", bare_path)
+                };
 
-        // AddTrackedWorkspace
-        let add_ws_req = AddTrackedWorkspaceRequest {
-            workspace: format!("file://{}", ws_path),
-            do_not_watch_files: true,
-            is_passive_workspace: false,
-        };
-        let mut grpc_req = Request::new(add_ws_req);
-        grpc_req.metadata_mut().insert("x-codeium-csrf-token", csrf_token.parse().unwrap());
-        if let Err(e) = client.add_tracked_workspace(grpc_req).await {
-            tracing::warn!("⚠️ [Cascade] AddTrackedWorkspace failed (non-fatal): {:?}", e);
-        } else {
-            tracing::info!("📂 [Cascade] Workspace tracked: {}", ws_path);
-        }
+                // AddTrackedWorkspace: 裸绝对路径
+                let add_ws_req = crate::proto::exa::language_server_pb::AddTrackedWorkspaceRequest {
+                    workspace: bare_path.clone(),
+                    do_not_watch_files: true,
+                    is_passive_workspace: false,
+                };
+                let mut grpc_req = Request::new(add_ws_req);
+                grpc_req.metadata_mut().insert("x-codeium-csrf-token", csrf_token.parse().unwrap());
+                if let Err(e) = client.add_tracked_workspace(grpc_req).await {
+                    tracing::warn!("⚠️ [Cascade] 注册工作区失败 ({}): {:?}", bare_path, e);
+                } else {
+                    tracing::info!("✅ [Cascade] 工作区已注册: {}", bare_path);
+                }
 
-        // SetWorkingDirectories
-        let set_wd_req = SetWorkingDirectoriesRequest {
-            directory_uris: vec![format!("file://{}", ws_path)],
-        };
-        let mut grpc_req2 = Request::new(set_wd_req);
-        grpc_req2.metadata_mut().insert("x-codeium-csrf-token", csrf_token.parse().unwrap());
-        if let Err(e) = client.set_working_directories(grpc_req2).await {
-            tracing::warn!("⚠️ [Cascade] SetWorkingDirectories failed (non-fatal): {:?}", e);
-        } else {
-            tracing::info!("📂 [Cascade] Working directories set: {}", ws_path);
+                // SetWorkingDirectories: file:// URI 格式
+                let set_wd_req = crate::proto::exa::language_server_pb::SetWorkingDirectoriesRequest {
+                    directory_uris: vec![uri.clone()],
+                };
+                let mut grpc_req2 = Request::new(set_wd_req);
+                grpc_req2.metadata_mut().insert("x-codeium-csrf-token", csrf_token.parse().unwrap());
+                if let Err(e) = client.set_working_directories(grpc_req2).await {
+                    tracing::warn!("⚠️ [Cascade] 设置工作目录失败 ({}): {:?}", uri, e);
+                } else {
+                    tracing::info!("✅ [Cascade] 工作目录已设置: {}", uri);
+                }
+            }
         }
 
         Ok(Self {
@@ -202,36 +213,18 @@ impl CascadeClient {
                 subscriber_id: uuid::Uuid::new_v4().to_string(),
             };
             
-            let mut reactive_stream = match client_clone.stream_cascade_reactive_updates(Request::new(stream_req)).await {
-                Ok(resp) => Some(resp.into_inner()),
-                Err(e) => {
-                    tracing::warn!("⚠️ [Cascade] 无法开启 Reactive Stream (将回退至轮询): {:?}", e);
-                    None
-                }
-            };
+            // ⚠️ 紧急修补：PR 7 中补齐了 CSRF Token，导致原本会被服务器 403 拒绝的
+            // Reactive Stream 成功建立了连接。但由于目前解析 `diff` 结构可能未完全对齐新版，
+            // 或者此端点流机制极易卡死（挂起不发数据），进而导致此处的 `stream.next().await` 死锁，
+            // 并阻断了下方能稳健出字的【策略 B：轮询兜底快照】的执行！
+            // 
+            // 在协议彻底对齐前，强制屏蔽策略 A，全部降级执行轮询：
+            // (修复 E0412 编译错误，直接强制跳过此块即可，无需显式 Option 类型推断)
 
-            if let Some(mut stream) = reactive_stream {
-                while let Some(res) = stream.next().await {
-                    match res {
-                        Ok(update) => {
-                            if let Some(diff) = update.diff {
-                                // 路径：Steps(1) -> PlannerResponse(20) -> Response(1)
-                                if let Some(new_full_text) = extract_text_from_diff(&diff, &[1, 20, 1]) {
-                                    let current_len = new_full_text.len();
-                                    if current_len > last_sent_len {
-                                        let delta = &new_full_text[last_sent_len..current_len];
-                                        if tx.send(Ok(delta.to_string())).await.is_err() { return; }
-                                        last_sent_len = current_len;
-                                    }
-                                }
-                            }
-                        }
-                        Err(s) => {
-                            tracing::warn!("⚠️ [Cascade] Reactive Stream 中断 [{}]: {}", s.code(), s.message());
-                            break; 
-                        }
-                    }
-                }
+            if false {
+                // 原有的流处理逻辑被屏蔽
+                let mut fake_stream = tokio_stream::empty::<i32>();
+                while let Some(_) = fake_stream.next().await {}
             }
 
             // --- 策略 B: 轮询 Fallback 与 最终快照确认 ---
@@ -263,14 +256,16 @@ impl CascadeClient {
                                 last_sent_len = full_text.len();
                             }
 
-                            // 状态退出逻辑
-                            if traj_resp.status == CascadeRunStatus::Idle as i32 && last_sent_len > 0 {
+                            // 状态退出逻辑：对齐 ls-transcoder-rs1 的退出条件
+                            // rs1: Idle && retry_count > 10，无条件退出，不管有没有内容
+                            if traj_resp.status == CascadeRunStatus::Idle as i32 && retry_count > 10 {
                                 break;
                             }
                         }
                         
-                        // 防止死循环的兜底逻辑
-                        if traj_resp.status == CascadeRunStatus::Idle as i32 && retry_count > 60 {
+                        // 紧急兜底逻辑：防止任何情况下无限循环
+                        if retry_count > 100 {
+                             tracing::warn!("⚠️ [Cascade] 超过最大轮询次数 (100), 强制退出");
                              break;
                         }
                     }

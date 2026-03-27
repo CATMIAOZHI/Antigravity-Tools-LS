@@ -32,12 +32,20 @@ pub async fn handle_generic_stream<M: ProtocolMapper>(
     let model_name = M::get_model(&req).to_string();
     let prompt = M::build_prompt(&req)?;
 
+    // 🚀 工作区路径解析：优先使用 conn.workspace_dir，其次从请求 system prompt 中提取
+    let resolved_workspace = conn.workspace_dir.clone()
+        .or_else(|| M::extract_workspace(&req));
+    if let Some(ref ws) = resolved_workspace {
+        tracing::info!("📁 [Engine] 解析到工作区路径: {}", ws);
+    }
+
     // 尝试建立连接
     let mut client = crate::cascade::CascadeClient::new(
         conn.grpc_addr.clone(),
         metadata.clone(),
         conn.csrf_token.clone().unwrap_or_default(),
         conn.tls_cert.clone(),
+        resolved_workspace,
     ).await.map_err(|e| {
         // 如果连接阶段就发现 403 迹象（通过 ErrorFetcher）
         if let Some(ref fetcher) = conn.error_fetcher {

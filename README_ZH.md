@@ -4,10 +4,10 @@
 
 # 🚀 Antigravity Tools LS
 
-> **专业级 Language Server 协议转码桥接器 (v0.0.2)**
+> **专业级 Language Server 协议转码桥接器 (v0.0.3)**
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Version-0.0.2-blue?style=flat-square" alt="Version">
+  <img src="https://img.shields.io/badge/Version-0.0.3-blue?style=flat-square" alt="Version">
   <img src="https://img.shields.io/badge/Rust-1.74%2B-red?style=flat-square" alt="Rust">
   <img src="https://img.shields.io/badge/Tokio-Async-brightgreen?style=flat-square" alt="Tokio">
   <img src="https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey?style=flat-square" alt="License">
@@ -151,6 +151,13 @@ docker run -d \
   lbjlaq/antigravity-tools-ls:latest
 ```
 
+> [!CAUTION]
+> **Docker 远程部署的工作区可见性限制**：
+> 当您在远程服务器（如 VPS 或 NAS）上使用 Docker 部署本项目时，部署在容器内的 LS 引擎 **无法直接读取** 您本地设备上的工作区代码文件。
+> - **原因**：跨设备的文件系统是物理隔离的。容器内的进程只能访问容器内部或通过 Volume 挂载的路径。
+> - **影响**：虽然 API 转发正常，但 LS 引擎由于找不到本地代码，将无法提供诸如“全项目代码搜索”、“符号跳转”等依赖上下文的高级功能。
+> - **建议**：如需完整功能，请确保 LS 服务与代码文件位于同一文件系统视角下（即在本地运行 Docker 或二进制）。
+
 > [!WARNING]
 > **低内存 OOM 警告**：由于 `ls_core` 在处理高并发请求时会瞬间申请大量内存（峰值 >2GB），在小于 2GB 内存 hosting 上部署时，**必须配置至少 4GB 的 Swap**。详见 [OOM 排查与修复指南](./docs/Linux_Deployment_OOM_Guide.md)。
 
@@ -222,6 +229,16 @@ docker run -d \
 ---
 
 ## 📝 变更日志 (Narrative Changelog)
+
+### v0.0.3 - 协议适配增强与隔离解除 (2026-03-26)
+- **[前端 UI] 修复首页完整性误报**：引入了“检查中 (CHECKING)”状态，解决了 Dashboard 首页在核心资产数据加载完成前错误显示为“受损 (DEGRADED)”的问题，消除了首屏闪烁警告。
+- **[核心解绑] 解除沙箱隔离**：移除了原针对 Cascade Agent 的虚拟工作区限制（`/tmp/antigravity_workspace`），全面解锁 AI 智能体读取宿主机本地任意目录代码库的能力。
+- **[协议适配] 深度兼容 Claude CLI**：修复了 Anthropic 流式输出中严格要求的 `usage` 载荷字段，并新增 `/v1/messages/count_tokens` 预检路由，使其完美兼容 Cherry Studio 和官方 Claude CLI。
+- **[服务鲁棒] 后备模型注入机制**：在获取配额失败或账号尚未同步模型列表时，自动在接口层和前端界面注入（如 `gemini-3.1-pro-high` 等）默认后备模型，防止前端白屏与接口无模型可用。
+- **[资产供给] 本地优先边界强化**：优化了 `AssetProvisioner` 同步逻辑，一旦嗅探到本地存在的 Antigravity IDE 版本号达标，将立即判定为对齐并阻断无意义的云端重复下载，提升启动速度。
+- **[协议扩容] 原生 Gemini 客户端支持**：支持了 `x-goog-api-key` 原生鉴权头，并在网关层自动剥离了原生 SDK 拼接的调用方法后缀（如 `:streamGenerateContent`），实现与官方 Gemini 生态开发工具的无缝接入。
+- **[基座升级] LS Core 启动参数演进**：适配了新版 Antigravity 原生引擎的安全策略，应用了新的通信端口参数（`-https_server_port`），并为级联智能体机制补充了必需的 CSRF Token 特征签名，消除严控机制带来的连接重置报错。
+- **[会话治理] 无 IO 身份追踪**：摒弃了之前通过高频读取本地 `.gemini` 目录下令牌文件监测账号变动的做法，改用内存中 MD5 哈希指纹即时比对身份变动，大幅减少文件 IO 开销与并发抢占问题。
 
 ### v0.0.2 - 容器化生产力与依赖优化 (2026-03-25)
 - **[Docker] 启动环境自愈**：攻克了 `debian:bookworm-slim` 镜像缺失极简 GUI 库导致的启动崩溃问题，补齐了 `ls_core` 运行所需的最小依赖集（`libnss3`, `libgbm1` 等）。

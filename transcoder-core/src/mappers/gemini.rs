@@ -14,9 +14,9 @@ impl ProtocolMapper for GeminiMapper {
         "gemini".to_string()
     }
 
-    fn get_model(_req: &Self::Request) -> &str {
-        // Gemini 原生请求通常在路径中指定模型，这里返回占位符或视情况从状态中拿
-        "gemini-native"
+    fn get_model(req: &Self::Request) -> &str {
+        // Gemini 原生协议将模型放在 URL path 中，由上层路由注入到请求体
+        req.model.as_deref().unwrap_or("gemini-native")
     }
 
     fn build_prompt(req: &Self::Request) -> Result<String> {
@@ -38,7 +38,7 @@ impl ProtocolMapper for GeminiMapper {
             if !tool_prompt.is_empty() {
                 prompt.push_str(&tool_prompt);
                 prompt.push_str("\n\n");
-                prompt.push_str("IMPORTANT: If you need to use any of the tools above, you MUST output a <tool_call> XML tag containing the tool name and arguments in JSON format.\n");
+                prompt.push_str("IMPORTANT: If you need to use any of the tools above, you MUST output a <tool_call> XML tag containing the tool name and arguments in JSON format. For example:\n<tool_call>{\"name\": \"tool_name\", \"arguments\": {\"arg1\": \"val1\"}}</tool_call>\nAfter outputting the tag, you should stop generating and wait for the result.\n\n");
             }
         }
 
@@ -57,7 +57,7 @@ impl ProtocolMapper for GeminiMapper {
         is_final: bool,
         tool_call_buffer: &mut String,
         in_tool_call: &mut bool,
-        _tool_call_index: &mut u32,
+        tool_call_index: &mut u32,
     ) -> Result<Vec<MapperChunk>> {
         let mut results = vec![];
 
@@ -90,11 +90,19 @@ impl ProtocolMapper for GeminiMapper {
                     let inner_text = &pending_text[..end_idx];
                     tool_call_buffer.push_str(inner_text);
                     
-                    if let Ok(json_obj) = serde_json::from_str::<serde_json::Value>(tool_call_buffer.trim()) {
-                        let name = json_obj.get("name").and_then(|v| v.as_str()).unwrap_or("unknown_tool").to_string();
-                        let args = json_obj.get("arguments").cloned().unwrap_or_else(|| json!({}));
-                        let chunk_json = json!({ "candidates": [{ "content": { "parts": [{ "functionCall": { "name": name, "args": args } }] }, "finishReason": "STOP" }] });
-                        results.push(MapperChunk { event: None, data: chunk_json.to_string() });
+                    let trim_buf = tool_call_buffer.trim();
+                    if !trim_buf.is_empty() {
+                        if let Ok(json_obj) = serde_json::from_str::<serde_json::Value>(trim_buf) {
+                            let name = json_obj.get("name").and_then(|v| v.as_str()).unwrap_or("unknown_tool").to_string();
+                            let args = json_obj.get("arguments").cloned().unwrap_or_else(|| json!({}));
+                            let chunk_json = json!({ "candidates": [{ "content": { "parts": [{ "functionCall": { "name": name, "args": args } }] }, "finishReason": "STOP" }] });
+                            results.push(MapperChunk { event: None, data: chunk_json.to_string() });
+                            *tool_call_index += 1;
+                        } else {
+                            let fallback = format!("<tool_call>{}</tool_call>", trim_buf);
+                            let chunk_json = json!({ "candidates": [{ "content": { "parts": [{ "text": fallback }] } }] });
+                            results.push(MapperChunk { event: None, data: chunk_json.to_string() });
+                        }
                     }
 
                     pending_text = pending_text[end_idx + "</tool_call>".len()..].to_string();

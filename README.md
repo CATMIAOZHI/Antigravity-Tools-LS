@@ -4,10 +4,10 @@
 
 # 🚀 Antigravity Tools LS
 
-> **Professional Language Server Protocol Transcoding Bridge (v0.0.2)**
+> **Professional Language Server Protocol Transcoding Bridge (v0.0.3)**
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Version-0.0.2-blue?style=flat-square" alt="Version">
+  <img src="https://img.shields.io/badge/Version-0.0.3-blue?style=flat-square" alt="Version">
   <img src="https://img.shields.io/badge/Rust-1.74%2B-red?style=flat-square" alt="Rust">
   <img src="https://img.shields.io/badge/Tokio-Async-brightgreen?style=flat-square" alt="Tokio">
   <img src="https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey?style=flat-square" alt="License">
@@ -151,6 +151,13 @@ docker run -d \
   lbjlaq/antigravity-tools-ls:latest
 ```
 
+> [!CAUTION]
+> **Workspace Visibility Limitations in Remote Docker Deployment**:
+> When deploying this project via Docker on a remote server (e.g., VPS or NAS), the LS engine inside the container **cannot directly read** your local workspace code files.
+> - **Reason**: Filesystems across different devices are physically isolated. Processes inside the container can only access paths within the container or those mounted via Volumes.
+> - **Impact**: While API forwarding will work, advanced features like "Project-wide Code Search" or "Symbol Definitions" (which depend on context) will fail because the LS engine cannot locate the source code.
+> - **Recommendation**: For full functionality, ensure the LS service and your code files share the same filesystem view (i.e., run the Docker or binary locally on your development machine).
+
 > [!WARNING]
 > **Low Memory OOM Warning**: High concurrency queries may cause `ls_core` to instantly allocate a massive amount of memory (peak >2GB). When deploying on servers with less than 2GB RAM, **you must configure at least 5GB of Swap**. See the [OOM Troubleshooting Guide](./docs/Linux_Deployment_OOM_Guide.md) for details.
 
@@ -222,6 +229,16 @@ The Model Alias forwarding feature has not yet been achieved. An exact Model ID 
 ---
 
 ## 📝 Narrative Changelog
+
+### v0.0.3 - Protocol Adaptation & Sandbox Bypass (2026-03-26)
+- **[Frontend UI] Dashboard Integrity Status Fix**: Introduced a "CHECKING" status to resolve the issue where the Dashboard homepage incorrectly displayed as "DEGRADED" before core asset data finished loading, eliminating initial screen warning flicker.
+- **[Core] Sandbox Isolation Bypass**: Removed the virtual workspace restriction (`/tmp/antigravity_workspace`) for the Cascade Agent, fully unlocking the AI agent's ability to read arbitrary local codebase directories on the host machine.
+- **[Protocol] Claude CLI Deep Compatibility**: Fixed strict `usage` payloads in Anthropic streaming outputs and added a `/v1/messages/count_tokens` preflight mock endpoint to perfectly support Cherry Studio and the official Claude CLI tool.
+- **[Reliability] Fallback Model Injection**: Automatically injects preset/default models (e.g., `gemini-3.1-pro-high`) into memory and the frontend UI when quota detection fails or new accounts haven't synced models, preventing blank UI screens and missing API models.
+- **[Provisioner] Strengthened Local-First Validation**: Optimized `AssetProvisioner` logic to immediately skip meaningless cloud downloads once an aligned locally installed Antigravity version is sniffed, speeding up the server startup.
+- **[Protocol] Native Gemini Client Integration**: Engineered support for `x-goog-api-key` headers and automatically intercepts/strips operation suffixes (e.g., `:streamGenerateContent`) from model paths at the gateway, unlocking drop-in compatibility for official Gemini ecosystem tools.
+- **[Engine] Aligned LS Core Launch Signatures**: Adopted security adaptations targeting recent Antigravity native engines, transitioning to `-https_server_port` and injecting mandatory bidirectional CSRF tokens for Cascade agents to eradicate strict connection-reset issues.
+- **[Session] Zero-IO Identity Tracking**: Deprecated high-frequency disk-reads of local `.gemini` authorization files during identity evaluations, swapped to rapid memory-bound MD5 fingerprint checks, mitigating heavy file operations and concurrency contention.
 
 ### v0.0.2 - Containerization & Dependency Optimization (2026-03-25)
 - **[Docker] Runtime Self-Healing**: Resolved startup crashes in `debian:bookworm-slim` by adding minimal required libraries for `ls_core` (`libnss3`, `libgbm1`, etc.).

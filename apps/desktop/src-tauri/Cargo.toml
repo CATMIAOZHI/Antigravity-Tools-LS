@@ -1,6 +1,6 @@
 [package]
 name = "antigravity_tools_ls"
-version = "0.0.2"
+version = "0.0.3"
 description = "Antigravity Tools LS Desktop"
 authors = ["Antigravity Team"]
 edition = "2021"

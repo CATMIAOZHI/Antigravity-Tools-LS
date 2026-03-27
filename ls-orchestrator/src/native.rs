@@ -59,6 +59,7 @@ pub struct NativeLsInstance {
     data_dir: PathBuf,
     id: String,
     identity: String,
+    identity_token_fingerprint: String,
     // 追踪最后访问时间以支持 LRU (使用同步锁以适配 LsInstance trait)
     last_accessed: std::sync::Mutex<std::time::Instant>,
     created_at: std::time::Instant,
@@ -263,12 +264,10 @@ impl LsProvider for NativeLsProvider {
             if let Some(inst) = cache.get(&logic_id) {
                 // 如果是 Slot 模式且 Token 变更了，则需要重启切换
                 let is_slot_mismatch = slot_id.is_some() && {
-                    // 我们直接检查对应的隔离目录下的 token 文件
-                    let current_token_path = self.base_dir.join(format!("isolated_vs_{}", logic_id)).join(".gemini/jetski-standalone-oauth-token");
-                    if let Ok(content) = std::fs::read_to_string(current_token_path) {
-                        !content.contains(identity_token)
+                    if let Some(native) = inst.as_any().downcast_ref::<NativeLsInstance>() {
+                        native.identity_token_fingerprint != format!("{:x}", md5::compute(identity_token))
                     } else {
-                        true
+                        false
                     }
                 };
 
@@ -359,7 +358,7 @@ impl LsProvider for NativeLsProvider {
         
         info!("🚀 启动核心进程 (ID: {})...", logic_id);
         debug!("🛠 [Native] 命令执行路径: {:?}", self.bin_path);
-        debug!("🛠 [Native] 启动参数: -lsp_port {} -server_port {} -extension_server_port {} -extension_server_csrf_token {}", lsp_port, server_port, es_port, es_csrf_token);
+        debug!("🛠 [Native] 启动参数: -lsp_port {} -https_server_port {} -extension_server_port {} -extension_server_csrf_token {}", lsp_port, server_port, es_port, es_csrf_token);
         
         let vscode_pid = std::process::id().to_string();
         let session_id = uuid::Uuid::new_v4().to_string();
@@ -370,19 +369,47 @@ impl LsProvider for NativeLsProvider {
             "_languagePackSupport": true
         }).to_string();
 
+        let real_home = std::env::var("HOME")
+            .map(PathBuf::from)
+            .unwrap_or_else(|_| PathBuf::from("/tmp"));
         let mut cmd = Command::new(&self.bin_path);
-        cmd.env("HOME", &data_dir)
+        cmd.env("HOME", &real_home)  // ✅ 使用真实用户 HOME，否则 LS 引擎路径验证会以隔离目录为基准
            .env("CLOUD_CODE_ENDPOINT", &self.cloud_code_endpoint)
            .env("VSCODE_PID", &vscode_pid)
            .env("ELECTRON_RUN_AS_NODE", "1")
-           .env("ANTIGRAVITY_EDITOR_APP_ROOT", &data_dir) 
+           .env("ANTIGRAVITY_EDITOR_APP_ROOT", &data_dir)  // 隔离目录仍通过此变量注入
+           .env("VSCODE_APPDATA", &data_dir)               // 用于数据隔离
            .env("VSCODE_NLS_CONFIG", &nls_config)
-           .arg("-lsp_port").arg(lsp_port.to_string())
-           .arg("-server_port").arg(server_port.to_string())
-           .arg("-extension_server_port").arg(es_port.to_string())
-           .arg("-csrf_token").arg(&es_csrf_token)
-           // 🚀 核心变更：不再携带 -standalone
-           .arg("--cloud_code_endpoint")
+           .arg("-lsp_port").arg(lsp_port.to_string());
+
+        // 🚀 版本兼容：旧版引擎使用旧参数，新版 (>=1.21.6) 使用新的安全参数
+        let is_legacy = {
+            let ver = &self.metadata_config.ide_version;
+            let parts: Vec<&str> = ver.split('.').collect();
+            if parts.len() >= 2 {
+                let major = parts[0].parse::<u32>().unwrap_or(0);
+                let minor = parts[1].parse::<u32>().unwrap_or(0);
+                major < 1 || (major == 1 && minor < 21)
+            } else {
+                false
+            }
+        };
+
+        if is_legacy {
+            cmd.arg("-server_port").arg(server_port.to_string());
+        } else {
+            cmd.arg("-https_server_port").arg(server_port.to_string());
+        }
+
+        cmd.arg("-extension_server_port").arg(es_port.to_string())
+           .arg("-csrf_token").arg(&es_csrf_token);
+
+        if !is_legacy {
+            cmd.arg("-extension_server_csrf_token").arg(&es_csrf_token);
+        }
+
+        // 🚀 核心变更：不再携带 -standalone
+        cmd.arg("--cloud_code_endpoint")
            .arg(&self.cloud_code_endpoint)
            .stdout(Stdio::piped())
            .stderr(Stdio::piped())
@@ -477,6 +504,7 @@ impl LsProvider for NativeLsProvider {
             data_dir,
             id: logic_id.clone(),
             identity: identity.to_string(),
+            identity_token_fingerprint: format!("{:x}", md5::compute(identity_token)),
             last_accessed: std::sync::Mutex::new(std::time::Instant::now()),
             created_at: std::time::Instant::now(),
             oauth_token: oauth_token_arc.clone(),

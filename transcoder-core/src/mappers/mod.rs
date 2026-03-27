@@ -51,4 +51,10 @@ pub trait ProtocolMapper: Send + Sync + 'static {
     fn initial_chunks() -> Vec<MapperChunk> {
         vec![]
     }
+
+    /// 提取请求中的工作区目录（可选，默认返回 None）
+    fn extract_workspace(req: &Self::Request) -> Option<String> {
+        let _ = req;
+        None
+    }
 }

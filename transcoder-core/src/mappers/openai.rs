@@ -62,7 +62,7 @@ impl ProtocolMapper for OpenAiMapper {
         is_final: bool,
         tool_call_buffer: &mut String,
         in_tool_call: &mut bool,
-        _tool_call_index: &mut u32,
+        tool_call_index: &mut u32,
     ) -> Result<Vec<MapperChunk>> {
         let mut results = vec![];
         
@@ -93,8 +93,17 @@ impl ProtocolMapper for OpenAiMapper {
                 if let Some(end_pos) = pending_text.find("</tool_call>") {
                     let inner_text = &pending_text[..end_pos];
                     tool_call_buffer.push_str(inner_text);
-                    if !tool_call_buffer.trim().is_empty() {
-                        results.push(MapperChunk { event: None, data: generate_tool_call_chunk(model, tool_call_buffer)? });
+                    let trim_buf = tool_call_buffer.trim();
+                    if !trim_buf.is_empty() {
+                        if let Ok(v) = serde_json::from_str::<serde_json::Value>(trim_buf) {
+                            let name = v.get("name").and_then(|n| n.as_str()).unwrap_or("unknown_tool").to_string();
+                            let args = v.get("arguments").map(|a| if let Some(s) = a.as_str() { s.to_string() } else { a.to_string() }).unwrap_or_else(|| "{}".to_string());
+                            results.push(MapperChunk { event: None, data: generate_tool_call_chunk(model, &name, &args, *tool_call_index)? });
+                            *tool_call_index += 1;
+                        } else {
+                            let fallback = format!("<tool_call>{}</tool_call>", trim_buf);
+                            results.push(MapperChunk { event: None, data: generate_chunk(model, &fallback, false)? });
+                        }
                     }
                     tool_call_buffer.clear();
                     *in_tool_call = false;
@@ -126,10 +135,7 @@ fn generate_chunk(model: &str, content: &str, is_final: bool) -> Result<String> 
     Ok(chunk.to_string())
 }
 
-fn generate_tool_call_chunk(model: &str, json_content: &str) -> Result<String> {
-    let v: serde_json::Value = serde_json::from_str(json_content).unwrap_or(json!({}));
-    let name = v["name"].as_str().unwrap_or("unknown");
-    let args = v["arguments"].to_string();
+fn generate_tool_call_chunk(model: &str, name: &str, args: &str, tool_call_index: u32) -> Result<String> {
     let now = SystemTime::now().duration_since(UNIX_EPOCH)?.as_secs();
     let chunk = json!({
         "id": format!("chatcmpl-cascade-{}", uuid::Uuid::new_v4()),
@@ -140,8 +146,8 @@ fn generate_tool_call_chunk(model: &str, json_content: &str) -> Result<String> {
             "index": 0,
             "delta": {
                 "tool_calls": [{
-                    "index": 0,
-                    "id": format!("call_{}", uuid::Uuid::new_v4().to_string().replace("-", "")),
+                    "index": tool_call_index,
+                    "id": format!("call_{}_{}", uuid::Uuid::new_v4().to_string().replace("-", ""), tool_call_index),
                     "type": "function",
                     "function": { "name": name, "arguments": args }
                 }]

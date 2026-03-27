@@ -17,6 +17,8 @@ pub struct LsConnectionInfo {
     pub account_email: Option<String>,
     /// 🚀 增强：可选的错误抓取器，用于在流异常结束时回溯原始报错
     pub error_fetcher: Option<Arc<dyn ErrorFetcher>>,
+    /// 🚀 用户工作区目录（如 /Users/xxx/Desktop/cse3），用于向 LS 引擎注册工作区
+    pub workspace_dir: Option<String>,
 }
 
 pub fn parse_model_enum_string(enum_str: &str) -> i32 {

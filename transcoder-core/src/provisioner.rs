@@ -82,6 +82,9 @@ impl AssetProvisioner {
                 } else {
                     on_progress(10, "本地版本已对齐。");
                 }
+                // 🚀 核心修复：只要探测到本地路径，就认为已“对齐”或“满足”本地优先策略，
+                // 从而在后续逻辑中跳过官网版本的拉取。
+                sync_performed = true;
             }
         }
 
